@@ -14,13 +14,16 @@ Route::group(['prefix' => 'v1', 'as' => 'api.v1.'], function ()
 
         Route::middleware('jwt')->group(function ()
         {
+            Route::get('/all', [UserController::class, 'index']);
+
             Route::get('/me', [UserController::class, 'me']);
+            Route::put('/me', [UserController::class, 'updateMe']);
             Route::post('/logout', [AuthController::class, 'logout']);
 
-            Route::get('/profile', [UserController::class, 'profile']);
             Route::get('/librarians', [UserController::class, 'librarians']);
-            Route::post('/librarians', [UserController::class, 'create']);
+            Route::post('/librarians', [UserController::class, 'createLibrarian']);
             Route::get('/borrowers', [UserController::class, 'borrowers']);
+            Route::post('/borrowers', [UserController::class, 'createBorrower']);
         });
     });
 
