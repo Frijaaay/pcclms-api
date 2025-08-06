@@ -74,7 +74,7 @@ class UserController extends Controller
         ->get();
 
         return response()->json([
-            'librarian' => $librarians,
+            'librarians' => $librarians,
             'librarian_count' => count($librarians)
         ]);
     }
