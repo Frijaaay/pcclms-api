@@ -32,8 +32,8 @@ class Book extends Model implements JWTSubject
     protected $fillable = [
         'title',
         'author',
-        'category',
         'isbn',
+        'category',
         'added_date',
     ];
 

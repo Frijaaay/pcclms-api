@@ -6,6 +6,20 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\BookController;
 
+/**
+ * Routes for api/v2/users/
+*/
+Route::prefix('v2')->group(function () {
+    Route::middleware('jwt')->group(function () {
+    });
+        Route::prefix('users')->middleware('jwt')->controller(UserController::class)->group(function () {
+            Route::get('/all', 'all')->name('api.v2.users.all');
+            Route::post('/', 'store')->name('api.v2.users.store');
+    });
+});
+
+
+
 Route::group(['prefix' => 'v1', 'as' => 'api.v1.'], function ()
 {
     Route::group(['prefix' => 'users', 'as' => 'users.'], function ()
@@ -30,7 +44,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.v1.'], function ()
     Route::group(['prefix' => 'books', 'as' => 'books.'], function ()
     {
         Route::middleware('auth:api')->group(function () {
-            Route::get('/all', [BookController::class, 'books']);
+            Route::get('/all', [BookController::class, 'index']);
             Route::get('/copies', [BookController::class, 'copies']);
         });
     });

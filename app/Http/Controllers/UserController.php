@@ -2,15 +2,51 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\Services\UserServiceInterface;
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
+    /**
+     * Dependency Injection
+     */
+    private UserServiceInterface $userService;
+
+    public function __construct(UserServiceInterface $userService)
+    {
+        $this->userService = $userService;
+    }
+    /**
+     * All Method: Fetch all User
+     */
+    public function all()
+    {
+        return response()->json([
+            'message' => 'All Users Fetched',
+            'data' => $this->userService->all()
+        ]);
+    }
+
+    /**
+     * Store Method: Creates User
+     */
+    public function store(StoreUserRequest $request): JsonResponse
+    {
+        $user = $this->userService->store($request->validated());
+
+        return response()->json([
+            'message' => 'User successfully created.',
+            'data' => $user
+        ], 201);
+    }
+
+
+    // Below this line are requested to change
     /**
      * Fetch all Users
      */

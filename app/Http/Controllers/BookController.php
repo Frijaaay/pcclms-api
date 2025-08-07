@@ -8,13 +8,14 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function books()
+    public function index()
     {
-        $books = Book::withCount('bookCopies')->get();
+        $books = Book::withCount('bookCopies')
+        ->get();
 
         return response()->json([
-            'book' => $books,
-            'book_count' => count($books)
+            'book_count' => count($books),
+            'book' => $books
         ]);
     }
 
