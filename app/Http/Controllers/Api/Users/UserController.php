@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Users;
 
 use App\Contracts\Services\UserServiceInterface;
 use App\Http\Requests\StoreUserRequest;
@@ -28,7 +28,7 @@ class UserController extends Controller
     {
         return response()->json([
             'message' => 'All Users Fetched',
-            'data' => $this->userService->all()
+            'data' => $this->userService->getAllUsers()
         ]);
     }
 

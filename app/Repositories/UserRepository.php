@@ -19,9 +19,9 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Gets all models in users
      */
-    public function all()
+    public function selectAllUsers()
     {
-        return $this->model->all();
+        return $this->model->whereNot('user_type_id', '=', 1)->get()->groupBy('user_type_id');
     }
     /**
      * Creates new model in users
@@ -29,5 +29,19 @@ class UserRepository implements UserRepositoryInterface
     public function create(array $data)
     {
         return $this->model->create($data);
+    }
+    /**
+     * Update model in users by id
+     */
+    public function update(int $id, array $data)
+    {
+        //
+    }
+    /**
+     * Delete model in users by id
+     */
+    public function delete(int $id)
+    {
+        //
     }
 }

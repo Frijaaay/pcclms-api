@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Contracts\Services\AuthServiceInterface;
 use App\Services\UserService;
 use App\Contracts\Services\UserServiceInterface;
+use App\Services\AuthService;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Services Concrete Binding
+        $this->app->bind(AuthServiceInterface::class, AuthService::class);
         $this->app->bind(UserServiceInterface::class, UserService::class);
     }
 

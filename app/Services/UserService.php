@@ -21,9 +21,14 @@ class UserService implements UserServiceInterface
     /**
      * All Method used by Controller
      */
-    public function all()
+    public function getAllUsers()
     {
-        return $this->userRepository->all();
+        $users = $this->userRepository->selectAllUsers();
+
+        return [
+            'librarians' => $users[2] ?? collect(),
+            'borrowers' => $users[3] ?? collect()
+        ];
     }
 
     /**

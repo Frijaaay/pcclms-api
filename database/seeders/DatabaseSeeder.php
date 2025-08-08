@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             'id_number' => '2021-102369',
             'name' => 'Jay Cortez Jr.',
             'email' => 'test@example.com',
-            'password' => Hash::make('admin'),
+            'password' => Hash::make('admin123'),
             'type' => 'Employee',
             'department' => 'IT Faculty',
             'status' => 'Active'
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             'id_number' => '2021-102368',
             'name' => 'Jay Librarian',
             'email' => 'testLibrarian@example.com',
-            'password' => Hash::make('admin'),
+            'password' => Hash::make('admin123'),
             'type' => 'Employee',
             'department' => 'Faculty',
             'status' => 'Active'
@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
             'id_number' => '2021-102367',
             'name' => 'Jay Borrower',
             'email' => 'testBorrower@example.com',
-            'password' => Hash::make('admin'),
+            'password' => Hash::make('admin123'),
             'type' => 'College',
             'department' => 'CEAT',
             'status' => 'Active'

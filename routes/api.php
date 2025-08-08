@@ -1,20 +1,44 @@
 <?php
 
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\BookController;
+use App\Http\Controllers\Api\Users\UserController;
+use App\Http\Controllers\Api\Books\BookController;
 
 /**
- * Routes for api/v2/users/
+ * Routes for api/v2
 */
-Route::prefix('v2')->group(function () {
-    Route::middleware('jwt')->group(function () {
+Route::prefix('v2')->name('api.v2.')->group(function () {
+    /**
+     * Routes for api/v2/users
+     */
+    Route::prefix('users')->name('users.')->group(function () {
+        /**
+         * Routes that uses AuthController
+         */
+        Route::controller(AuthController::class)->group(function () {
+            Route::post('/login', 'login')->name('login');
+            Route::get('/hydrate', 'hydrate')->name('hydrate');
+            Route::post('/logout', 'logout')->middleware('jwt')->name('logout');
+        });
+        /**
+        * Routes that require jwt
+        */
+        Route::middleware('jwt')->group(function () {
+            /**
+             * Routes that uses UserController
+            */
+            Route::controller(UserController::class)->group(function () {
+                Route::get('/all', 'all')->name('all');
+                Route::post('/', 'store')->name('store');
+            });
+        });
     });
-        Route::prefix('users')->middleware('jwt')->controller(UserController::class)->group(function () {
-            Route::get('/all', 'all')->name('api.v2.users.all');
-            Route::post('/', 'store')->name('api.v2.users.store');
+    /**
+     * api/v2/books
+     */
+    Route::prefix('books')->name('books.')->middleware('jwt')->controller(BookController::class)->group(function () {
+
     });
 });
 
@@ -44,13 +68,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.v1.'], function ()
     Route::group(['prefix' => 'books', 'as' => 'books.'], function ()
     {
         Route::middleware('auth:api')->group(function () {
-            Route::get('/all', [BookController::class, 'index']);
+            Route::get('/all', [BookController::class, 'index'])->name('all');
             Route::get('/copies', [BookController::class, 'copies']);
         });
     });
 });
-
-
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
