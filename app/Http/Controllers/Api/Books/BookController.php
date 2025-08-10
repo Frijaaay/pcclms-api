@@ -4,29 +4,24 @@ namespace App\Http\Controllers\Api\Books;
 
 use App\Models\Book;
 use App\Models\BookCopy;
+use App\Contracts\Services\BookServiceInterface;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class BookController extends Controller
 {
-    public function index()
-    {
-        $books = Book::withCount('bookCopies')
-        ->get();
+    /**
+     * Dependency Injection
+     */
+    private BookServiceInterface $bookService;
 
-        return response()->json([
-            'book_count' => count($books),
-            'book' => $books
-        ]);
+    public function __construct(BookServiceInterface $bookService)
+    {
+        $this->bookService = $bookService;
     }
 
-    public function bookCopy()
+    public function all()
     {
-        $copies = BookCopy::all();
-
-        return response()->json([
-            'bookCopy' => $copies
-
-        ]);
+        return $this->bookService->all();
     }
 }

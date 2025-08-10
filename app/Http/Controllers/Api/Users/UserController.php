@@ -25,10 +25,7 @@ class UserController extends Controller
      */
     public function all()
     {
-        return response()->json([
-            'message' => 'All Users Fetched',
-            'data' => $this->userService->getAllUsers()
-        ]);
+        return $this->userService->getAllUsers();
     }
 
     /**
