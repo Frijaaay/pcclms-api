@@ -35,5 +35,4 @@ class AuthUserRequest extends FormRequest
             'password' => ['required', 'string', 'min:8']
         ];
     }
-
 }

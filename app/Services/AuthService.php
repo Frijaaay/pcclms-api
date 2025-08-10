@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Exceptions\AuthException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Psy\CodeCleaner\FunctionContextPass;
-use SebastianBergmann\CodeUnit\FileUnit;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Contracts\Services\AuthServiceInterface;
 use App\Contracts\Repositories\AuthRepositoryInterface;
@@ -17,44 +17,45 @@ class AuthService implements AuthServiceInterface
     {
         $this->authRepository = $authRepository;
     }
+
     public function login(array $credentials)
     {
-        try {
-            $token = JWTAuth::attempt($credentials);
+        $token = Auth::attempt($credentials);
 
             if(!$token) {
-                return [
-                    'success' => false,
-                    'message' => 'Invalid credentials',
-                    'token' => null,
-                    'authenticatedUser' => null
-                ];
+                throw new AuthException();
             }
-            //else
 
-            $authenticatedUser = JWTAuth::user();
-
-            return [
-                'success' => true,
+            return response()->json([
                 'message' => 'Login successful',
-                'token' => $token,
-                'authenticatedUser' => $authenticatedUser
-            ];
-        } catch (JWTException $e) {
-            return [
-                'success' => false,
-                'message' => 'Could not create token',
-                'token' => null,
-                'authenticatedUser' => null
-            ];
-        }
+                'token' => [
+                    'value' => $token,
+                    'expires_in' => Auth::factory()->getTTL() * 60,
+                ],
+                'user' => Auth::user()
+            ]);
     }
-    public function hydrate(string $token)
+    public function hydrate()
     {
+            $user = Auth::user();
 
+            if(!$user) {
+                throw new AuthException();
+            }
+
+            /**@var \App\Models\User $user */
+            $user->load('userType');
+
+            return response()->json(['message' => 'Hydrated','user' => $user]);
     }
-    public function logout(string $token)
+    public function logout()
     {
+        try {
+            JWTAuth::invalidate(Auth::getToken());
+            return response()->json(['message' => 'Successfully logged out']);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'Failed to logout, please try again'], 500);
+        }
 
     }
 }

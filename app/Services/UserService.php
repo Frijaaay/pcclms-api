@@ -18,8 +18,9 @@ class UserService implements UserServiceInterface
     {
         $this->userRepository = $userRepository;
     }
+
     /**
-     * All Method used by Controller
+     * Get all Users
      */
     public function getAllUsers()
     {
@@ -32,25 +33,53 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * Store Method used by Controller
-    */
+     * Create User
+     */
     public function store(array $userData)
     {
-        $user = $this->userRepository->create($userData);
+        $user = $this->userRepository->createUser($userData);
 
         $plainPassword = $userData['plain_password'];
         unset($userData['plain_password']);
+
         /**
          * Send Email to the created user's email
         */
+
         Mail::to($user->email)->send(new UserCreatedMail(
             $user->name,
             $user->id_number,
             $plainPassword
         ));
 
-        return $user;
+        return [
+            'message' => 'User created successfully',
+            'user' => $user
+        ];
+    }
 
-        // return $this->userRepository->create($userData);
+    /**
+     * Update User
+     */
+    public function update(int $id, array $updatedUser)
+    {
+        $user = $this->userRepository->updateUserById($id, $updatedUser);
+
+        return [
+            'message' => 'User profile updated successfully',
+            'data' => $user
+        ];
+    }
+
+    /**
+     * Delete User
+     */
+    public function delete(int $id)
+    {
+        $this->userRepository->deleteUserById($id);
+
+        return [
+            'message' => 'User deleted successfully',
+        ];
     }
 }

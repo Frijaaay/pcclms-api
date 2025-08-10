@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -10,9 +11,13 @@ class StoreUserRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize()
     {
-        return true;
+        // New user instance from request
+        $newUser = new User(['user_type_id' => (int) $this->input('user_type_id')]);
+
+        // Calls the policy
+        return $this->user()->can('store', $newUser);
     }
 
     /**
@@ -23,7 +28,7 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_type_id' => ['required', 'string', 'max:10'],
+            'user_type_id' => ['required', 'integer', 'in:1,2,3'],
             'id_number' => ['required', 'string', 'max:11', 'unique:users,id_number', 'regex:/^20\d{2}-\d{6}$/'],
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:100', 'unique:users,email', 'regex:/^[a-zA-Z0-9._%+-]+@pcc\.edu\.ph$/'],
@@ -51,13 +56,6 @@ class StoreUserRequest extends FormRequest
 
         $plainPassword = Str::random(8);                   // Generate Default Password
         $data['password'] = bcrypt($plainPassword);        // Hash The Password Generated
-
-        match ($data['user_type_id']) {
-            'admin' => $data['user_type_id'] = 1,
-            'librarian' => $data['user_type_id'] = 2,
-            'borrower' => $data['user_type_id'] = 3,
-            // default => $data['user_type_id'] = 3, // Default to Borrower
-        };
 
         $data['status'] = 'Inactive';                       // Default to Inactive
         $data['plain_password'] = $plainPassword;           // Default Plain Password ; Used for email

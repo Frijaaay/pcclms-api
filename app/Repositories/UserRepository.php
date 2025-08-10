@@ -26,22 +26,24 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Creates new model in users
      */
-    public function create(array $data)
+    public function createUser(array $data)
     {
         return $this->model->create($data);
     }
     /**
      * Update model in users by id
      */
-    public function update(int $id, array $data)
+    public function updateUserById(int $id, array $data)
     {
-        //
+        $this->model->where('id', $id)->update($data);
+
+        return $this->model->find($id);
     }
     /**
      * Delete model in users by id
      */
-    public function delete(int $id)
+    public function deleteUserById(int $id)
     {
-        //
+        return $this->model->find($id)->delete();
     }
 }

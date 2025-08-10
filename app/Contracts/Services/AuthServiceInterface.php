@@ -6,7 +6,8 @@ interface AuthServiceInterface
 {
     public function login(array $credentials);
 
-    public function hydrate(string $token);
+    public function hydrate();
 
-    public function logout(string $token);
+    public function logout();
+
 }
