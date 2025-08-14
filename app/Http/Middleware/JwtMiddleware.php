@@ -22,13 +22,21 @@ class JwtMiddleware
             $user = JWTAuth::parseToken()->authenticate();
 
             if (!$user) {
-                return response()->json(['error' => 'unauthorized from jwtmiddleware']);
+                return response()->json([
+                    'error' => [
+                        'message' => 'Unauthorized',
+                        'code' => '401'
+                        ]
+                    ], 401);
             }
             auth('api')->setUser($user);
 
         } catch (Exception $e) {
             return response()->json([
-                'error' => 'Unauthorized'
+                'error' => [
+                    'message' => 'Unauthorized Request',
+                    'code' => 401
+                ]
             ], 401);
         }
 
