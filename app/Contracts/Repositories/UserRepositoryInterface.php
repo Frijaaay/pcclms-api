@@ -4,7 +4,9 @@ namespace App\Contracts\Repositories;
 
 interface UserRepositoryInterface
 {
-    public function selectAllUsers();
+    public function selectAllLibrarians();
+
+    public function selectAllBorrowers();
 
     public function createUser(array $data);
 

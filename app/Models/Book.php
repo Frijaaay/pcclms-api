@@ -32,6 +32,9 @@ class Book extends Model implements JWTSubject
     protected $fillable = [
         'title',
         'author',
+        'author 1',
+        'author 2',
+        'author 3',
         'isbn',
         'category',
         'added_date',
@@ -41,17 +44,17 @@ class Book extends Model implements JWTSubject
      * Appends the function status
      * @var array
      */
-    protected $appends = ['status'];
 
     public function bookCopies()
     {
         return $this->hasMany(BookCopy::class);
     }
 
+    protected $appends = ['status'];
     /**
      * Attribute function
      * @return Attribute
-     */
+    */
     public function status(): Attribute
     {
         return Attribute::get(function () {

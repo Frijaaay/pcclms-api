@@ -4,7 +4,9 @@ namespace App\Contracts\Services;
 
 interface UserServiceInterface
 {
-    public function getAllUsers();
+    public function getAllLibrarians();
+
+    public function getAllBorrowers();
 
     public function store(array $userData);
 

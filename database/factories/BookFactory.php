@@ -20,6 +20,9 @@ class BookFactory extends Factory
         return [
             'title' => fake()->unique()->sentence(3),
             'author' => fake()->name(),
+            'author_1' => fake()->optional()->name(),
+            'author_2' => fake()->optional()->name(),
+            'author_3' => fake()->optional()->name(),
             'isbn' => fake()->unique()->isbn13(),
             'category' => fake()->randomElement(['Fiction', 'Non-Fiction', 'Science', 'History', 'Biography']),
         ];

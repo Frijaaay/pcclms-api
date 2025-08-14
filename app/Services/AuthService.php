@@ -33,7 +33,7 @@ class AuthService implements AuthServiceInterface
                     'expires_in' => Auth::factory()->getTTL() * 60,
                 ],
                 'user' => Auth::user()
-            ]);
+            ], 200);
     }
     public function hydrate()
     {

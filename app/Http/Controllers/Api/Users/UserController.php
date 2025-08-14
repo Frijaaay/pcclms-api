@@ -21,11 +21,19 @@ class UserController extends Controller
         $this->userService = $userService;
     }
     /**
-     * Get all User
+     * Get all librarians
      */
-    public function all()
+    public function allLibrarians()
     {
-        return $this->userService->getAllUsers();
+        return $this->userService->getAllLibrarians();
+    }
+
+    /**
+     * Get all borrowers
+     */
+    public function allBorrowers()
+    {
+        return $this->userService->getAllBorrowers();
     }
 
     /**

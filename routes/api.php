@@ -29,7 +29,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     */
     Route::prefix('users')->name('users.')->group(function () {
         Route::controller(UserController::class)->middleware('jwt')->group(function () {
-            Route::get('/all', 'all')->name('all');
+            Route::get('/librarians', 'allLibrarians')->name('allLibrarians');
+            Route::get('/borrowers', 'allBorrowers')->name('allBorrowers');
             Route::post('/', 'store')->name('store');
             Route::post('/update/{id}', 'update')->name('update');
             Route::delete('/delete/{id}', 'delete')->name('delete');

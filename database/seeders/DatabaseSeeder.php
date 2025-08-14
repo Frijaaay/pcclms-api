@@ -61,7 +61,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Create 10 Librarian
-        User::factory(10)->create(['user_type_id' => 2]);
+        User::factory(10)->create([
+            'user_type_id' => 2,
+            'type' => 'Employee'
+        ]);
 
         // Create 10 Borrowers
         User::factory(10)->create(['user_type_id' => 3]);

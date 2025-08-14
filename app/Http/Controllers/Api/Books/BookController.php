@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Api\Books;
 
-use App\Models\Book;
-use App\Models\BookCopy;
-use App\Contracts\Services\BookServiceInterface;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreBookRequest;
+use App\Contracts\Services\BookServiceInterface;
 
 class BookController extends Controller
 {
@@ -23,5 +21,10 @@ class BookController extends Controller
     public function all()
     {
         return $this->bookService->all();
+    }
+
+    public function store(StoreBookRequest $request)
+    {
+        return $this->bookService->store($request->validated());
     }
 }

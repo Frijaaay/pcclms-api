@@ -20,11 +20,29 @@ class UserService implements UserServiceInterface
     }
 
     /**
-     * Get all Users
+     * Get all librarians
      */
-    public function getAllUsers()
+    public function getAllLibrarians()
     {
-        return $this->userRepository->selectAllUsers();
+        $librarians = $this->userRepository->selectAllLibrarians();
+
+        return [
+            'librarian_count' => count($librarians),
+            'librarians' => $librarians
+        ];
+    }
+
+    /**
+     * Get all borrowers
+     */
+    public function getAllBorrowers()
+    {
+        $borrowers = $this->userRepository->selectAllBorrowers();
+
+        return [
+            'borrower_count' => count($borrowers),
+            'borrowers' => $borrowers
+        ];
     }
 
     /**

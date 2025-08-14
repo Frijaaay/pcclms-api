@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\BookRepositoryInterface;
 use App\Models\Book;
 
-class BookRepository
+class BookRepository implements BookRepositoryInterface
 {
     private Book $model;
 
@@ -15,20 +16,20 @@ class BookRepository
 
     public function getAllBooks()
     {
-        return $this->model->all();
+        return $this->model->withCount('bookCopies')->get();
     }
 
     public function create(array $data)
     {
-
+        return $this->model->create($data);
     }
 
-    public function updateById(int $id, array $updatedData)
+    public function updateBookById(int $id, array $updatedData)
     {
 
     }
 
-    public function deleteById(int $id)
+    public function deleteBookById(int $id)
     {
 
     }

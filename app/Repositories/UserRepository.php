@@ -17,11 +17,19 @@ class UserRepository implements UserRepositoryInterface
         $this->model = $model;
     }
     /**
-     * Gets all models in users
+     * Gets all models that are librarians
      */
-    public function selectAllUsers()
+    public function selectAllLibrarians()
     {
-        return $this->model->whereNot('user_type_id', '=', 1)->get()->groupBy('user_type_id');
+        return $this->model->where('user_type_id', '=', 2)->orderBy('status')->get();
+    }
+
+    /**
+     * Gets all models that are borrowers
+     */
+    public function selectAllBorrowers()
+    {
+        return $this->model->where('user_type_id', '=', 3)->orderBy('status')->get();
     }
     /**
      * Creates new model in users

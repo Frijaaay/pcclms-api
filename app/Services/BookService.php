@@ -3,8 +3,9 @@
 namespace App\Services;
 
 use App\Contracts\Repositories\BookRepositoryInterface;
+use App\Contracts\Services\BookServiceInterface;
 
-class BookService
+class BookService implements BookServiceInterface
 {
     private BookRepositoryInterface $bookRepository;
 
@@ -15,12 +16,22 @@ class BookService
 
     public function all()
     {
-        return $this->bookRepository->getAllBooks();
+        $data = $this->bookRepository->getAllBooks();
+        return [
+            'message' => 'Books Retrieved Successfully',
+            'book_count' => count($data),
+            'books' => $data->sortBy('status')->values()
+        ];
     }
 
     public function store(array $data)
     {
-        return $this->bookRepository->create($data);
+        $data = $this->bookRepository->create($data);
+
+        return [
+            'message' => 'Book Created Successfully',
+            'book' => $data
+        ];
     }
 
     public function update(int $id, array $updatedData)
