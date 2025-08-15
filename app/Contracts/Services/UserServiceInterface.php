@@ -10,7 +10,7 @@ interface UserServiceInterface
 
     public function store(array $userData);
 
-    public function update(int $id, array $updatedUser);
+    public function update(string $id, array $updatedUser);
 
-    public function delete(int $id);
+    public function delete(string $id);
 }

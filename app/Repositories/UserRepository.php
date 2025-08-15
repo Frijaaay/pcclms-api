@@ -41,7 +41,7 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Update model in users by id
      */
-    public function updateUserById(int $id, array $data)
+    public function updateUserById(string $id, array $data)
     {
         $this->model->where('id', $id)->update($data);
 
@@ -50,7 +50,7 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Delete model in users by id
      */
-    public function deleteUserById(int $id)
+    public function deleteUserById(string $id)
     {
         return $this->model->find($id)->delete();
     }

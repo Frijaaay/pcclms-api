@@ -32,8 +32,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::get('/librarians', 'allLibrarians')->name('allLibrarians');
             Route::get('/borrowers', 'allBorrowers')->name('allBorrowers');
             Route::post('/', 'store')->name('store');
-            Route::post('/update/{id}', 'update')->name('update');
-            Route::delete('/delete/{id}', 'delete')->name('delete');
+            Route::put('/update/{id}', 'update')->whereUuid('id')->name('update');
+            Route::delete('/delete/{id}', 'delete')->whereUuid('id')->name('delete');
         });
     });
     /**

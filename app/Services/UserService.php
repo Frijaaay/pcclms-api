@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Contracts\Repositories\UserRepositoryInterface;
-use App\Contracts\Services\UserServiceInterface;
 use App\Mail\UserCreatedMail;
 use Illuminate\Support\Facades\Mail;
+use App\Contracts\Services\UserServiceInterface;
+use App\Contracts\Repositories\UserRepositoryInterface;
 
 class UserService implements UserServiceInterface
 {
@@ -74,20 +74,20 @@ class UserService implements UserServiceInterface
     /**
      * Update User
      */
-    public function update(int $id, array $updatedUser)
+    public function update(string $id, array $updatedUser)
     {
         $user = $this->userRepository->updateUserById($id, $updatedUser);
 
         return [
             'message' => 'User profile updated successfully',
-            'data' => $user
+            'user' => $user
         ];
     }
 
     /**
      * Delete User
      */
-    public function delete(int $id)
+    public function delete(string $id)
     {
         $this->userRepository->deleteUserById($id);
 

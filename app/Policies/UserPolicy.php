@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Log;
 
 class UserPolicy
 {
@@ -36,6 +35,7 @@ class UserPolicy
     public function update(User $authUser, User $updateUser)
     {
         $role = $authUser->user_type_id;
+
         $targetUserType = $updateUser->user_type_id;
 
         $isSelfUpdate = $authUser->id === $updateUser->id;

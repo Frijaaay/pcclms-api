@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Api\Users;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\Users\DeleteUserRequest;
+use App\Http\Requests\Users\StoreUserRequest;
+use App\Http\Requests\Users\UpdateUserRequest;
 use App\Contracts\Services\UserServiceInterface;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -47,18 +48,17 @@ class UserController extends Controller
     /**
      * Update User
      */
-    public function update(int $id, UpdateUserRequest $request)
+    public function update(string $id, UpdateUserRequest $request)
     {
         return $this->userService->update($id, $request->validated());
+        // return ['hello' => 'world', 'id' => $id];
     }
 
     /**
      *  Delete User
      */
-    public function delete(int $id)
+    public function delete(string $id, DeleteUserRequest $request)
     {
-        $user = \App\Models\User::findOrFail($id);
-        $this->authorize('delete', $user);
         return $this->userService->delete($id);
     }
 }
