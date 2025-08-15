@@ -60,6 +60,8 @@ class StoreUserRequest extends FormRequest
         $data['status'] = 'Inactive';                       // Default to Inactive
         $data['plain_password'] = $plainPassword;           // Default Plain Password ; Used for email
 
+        $data['email_verification_token'] = Str::random(64);
+
         return $data;
     }
 }

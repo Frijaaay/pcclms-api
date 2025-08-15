@@ -13,4 +13,6 @@ interface UserServiceInterface
     public function update(string $id, array $updatedUser);
 
     public function delete(string $id);
+
+    public function email_verification(string $id, $email_token);
 }

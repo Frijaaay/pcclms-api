@@ -22,20 +22,13 @@
 
     <!-- Body Content -->
     <div style="margin-top: 40px;">
-      <h2 style="margin: 0;">Welcome, {{ $name }}!</h2>
+      <h2 style="margin: 0;">Verify your email</h2>
 
-      <p>Your account has been successfully created in the PCC Library Portal.</p>
-
-      <p>You can now log in using the following credentials:</p>
+      <p>Please verify your email address by clicking the link below.</p>
 
       <div class="credentials">
-        <p><strong>Username:</strong> {{ $id_number }}</p>
-        <p><strong>Temporary Password:</strong> {{ $plainPassword }}</p>
+        <p><a href="{{ config('app.url') }}/api/v1/users/email/verify/{{ $id }}/{{ $email_token }}">Click here to confirm your email address.</a></p>
       </div>
-
-      <p><strong>Please change your password</strong> immediately after logging in.</p>
-
-      <p>Access the portal here: <a href="{{ config('app.url') }}">{{ config('app.url') }}</a></p>
 
       <p>Thank you,<br>
       Pasig Catholic College Library</p>

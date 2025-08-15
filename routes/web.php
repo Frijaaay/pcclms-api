@@ -23,11 +23,9 @@ Route::get('/mail', function () {
 Route::get('/email', function () {
     $user = User::where('user_type_id', 1)->first();
 
-    return view('emails.user_created',
+    return view('emails.verify_email',
         [
-            'name' => $user->name,
-            'email' => $user->email,
-            'id_number' => $user->id_number,
-            'plainPassword' => 'Test Password'
+            'id' => $user->id,
+            'email_token' => $user->email_verification_token
         ]);
 });

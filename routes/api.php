@@ -27,8 +27,12 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     /**
      * Routes for api/v1/users
     */
-    Route::prefix('users')->name('users.')->group(function () {
-        Route::controller(UserController::class)->middleware('jwt')->group(function () {
+    Route::prefix('users')->controller(UserController::class)->name('users.')->group(function () {
+        /**
+        * Email Verification Routes
+        */
+        Route::get('/email/verify/{id}/{email_token}', 'verifyEmail')->whereUuid('id')->name('email.verification');
+        Route::middleware('jwt')->group(function () {
             Route::get('/librarians', 'allLibrarians')->name('allLibrarians');
             Route::get('/borrowers', 'allBorrowers')->name('allBorrowers');
             Route::post('/', 'store')->name('store');

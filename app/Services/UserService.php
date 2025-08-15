@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Mail\UserCreatedMail;
+use App\Mail\VerifyUserEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Contracts\Services\UserServiceInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
@@ -65,6 +66,9 @@ class UserService implements UserServiceInterface
             $plainPassword
         ));
 
+        Mail::to($user->email)->send(new VerifyUserEmail($user->id, $user->email_verification_token));
+
+
         return [
             'message' => 'User created successfully',
             'user' => $user
@@ -94,5 +98,17 @@ class UserService implements UserServiceInterface
         return [
             'message' => 'User deleted successfully',
         ];
+    }
+
+    /**
+     * Email Verification
+     */
+    public function email_verification(string $id, $email_token)
+    {
+        $user = $this->userRepository->verifyEmailToken($id, $email_token);
+        if (!$user) {
+            throw new \ErrorException('Something went wrong', 412);
+        }
+        return ['message' => 'Email Verified Successfully'];
     }
 }

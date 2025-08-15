@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Ramsey\Uuid\Uuid;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
@@ -61,6 +60,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'email_verification_token',
         'status',
         'type',
         'department'
@@ -74,6 +74,7 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'email_verification_token'
     ];
 
     /**

@@ -2,8 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Models\User;
+use App\Contracts\Repositories\UserRepositoryInterface;
+use Symfony\Component\HttpFoundation\Exception\ExpiredSignedUriException;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -53,5 +54,22 @@ class UserRepository implements UserRepositoryInterface
     public function deleteUserById(string $id)
     {
         return $this->model->find($id)->delete();
+    }
+    /**
+     * Verify email token
+     */
+    public function verifyEmailToken(string $id, $email_token)
+    {
+        $user = $this->model->findOrFail($id);
+
+        if ($user->email_verification_token !== $email_token) {
+            throw new ExpiredSignedUriException();
+        }
+
+        $user->email_verified_at = now();
+        $user->email_verification_token = null;
+        $user->save();
+
+        return $user;
     }
 }

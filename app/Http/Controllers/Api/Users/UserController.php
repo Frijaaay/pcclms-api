@@ -8,6 +8,7 @@ use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
 use App\Contracts\Services\UserServiceInterface;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Symfony\Component\HttpFoundation\Exception\ExpiredSignedUriException;
 
 class UserController extends Controller
 {
@@ -51,7 +52,6 @@ class UserController extends Controller
     public function update(string $id, UpdateUserRequest $request)
     {
         return $this->userService->update($id, $request->validated());
-        // return ['hello' => 'world', 'id' => $id];
     }
 
     /**
@@ -60,5 +60,13 @@ class UserController extends Controller
     public function delete(string $id, DeleteUserRequest $request)
     {
         return $this->userService->delete($id);
+    }
+
+    public function verifyEmail(string $id, $token)
+    {
+        if (!$this->userService->email_verification($id, $token)) {
+            throw new ExpiredSignedUriException();
+        }
+        return view('email-verified');
     }
 }

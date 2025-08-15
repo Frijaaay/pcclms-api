@@ -13,4 +13,6 @@ interface UserRepositoryInterface
     public function updateUserById(string $id, array $data);
 
     public function deleteUserById(string $id);
+
+    public function verifyEmailToken(string $id, $email_token);
 }

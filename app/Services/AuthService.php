@@ -22,18 +22,26 @@ class AuthService implements AuthServiceInterface
     {
         $token = Auth::attempt($credentials);
 
-            if(!$token) {
-                throw new AuthException();
-            }
+        $user = Auth::user();
 
+        if (is_null($user->email_verified_at)) {
+            Auth::logout();
             return response()->json([
-                'message' => 'Login successful',
-                'token' => [
-                    'value' => $token,
-                    'expires_in' => Auth::factory()->getTTL() * 60,
-                ],
-                'user' => Auth::user()
-            ], 200);
+                'message' => 'Please verify your email before logging in.'
+            ], 403);
+        }
+        if(!$token) {
+            throw new AuthException();
+        }
+
+        return response()->json([
+            'message' => 'Login successful',
+            'token' => [
+                'value' => $token,
+                'expires_in' => Auth::factory()->getTTL() * 60,
+            ],
+            'user' => $user
+        ], 200);
     }
     public function hydrate()
     {
