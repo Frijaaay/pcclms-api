@@ -17,7 +17,7 @@ class UpdateUserRequest extends FormRequest
 
         $updatedUser = User::findOrFail($userId);
 
-        return $this->user()->can('update', $updatedUser);
+        return $this->user()->can('updateUser', $updatedUser);
     }
 
     /**
@@ -28,7 +28,7 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         $routeId = $this->route('id');
-        // dd($routeId, User::find($routeId));
+
         return [
             'user_type_id' => ['required', 'integer', 'in:1,2,3'],
             'id_number' => ['required', 'string', Rule::unique('users', 'id_number')->ignore($routeId, 'id'), 'regex:/^20\d{2}-\d{6}$/'],

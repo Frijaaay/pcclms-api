@@ -1,22 +1,18 @@
 <?php
 
-namespace App\Http\Requests\Users;
+namespace App\Http\Requests;
 
-use App\Models\User;
+use App\Models\Book;
 use Illuminate\Foundation\Http\FormRequest;
 
-class DeleteUserRequest extends FormRequest
+class DeleteBookRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $userId = $this->route('id');
-
-        $deleteUser = User::findOrFail($userId);
-
-        return $this->user()->can('deleteUser', $deleteUser);
+        return $this->user()->can('manage_book', Book::class);
     }
 
     /**

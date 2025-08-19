@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\Books;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreBookRequest;
+use App\Http\Requests\Books\StoreBookRequest;
 use App\Contracts\Services\BookServiceInterface;
+use App\Http\Requests\DeleteBookRequest;
+use App\Http\Requests\UpdateBookRequest;
 
 class BookController extends Controller
 {
@@ -26,5 +28,15 @@ class BookController extends Controller
     public function store(StoreBookRequest $request)
     {
         return $this->bookService->store($request->validated());
+    }
+
+    public function update(int $id, UpdateBookRequest $request)
+    {
+        return $this->bookService->update($id, $request->validated());
+    }
+
+    public function delete(int $id, DeleteBookRequest $_)
+    {
+        return $this->bookService->delete($id);
     }
 }

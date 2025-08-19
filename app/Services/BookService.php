@@ -36,11 +36,20 @@ class BookService implements BookServiceInterface
 
     public function update(int $id, array $updatedData)
     {
-        return $this->bookRepository->updateBookById($id, $updatedData);
+        $data = $this->bookRepository->updateBookById($id, $updatedData);
+
+        return [
+            'message' => 'Book Updated Successfully',
+            'book' => $data
+        ];
     }
 
     public function delete(int $id)
     {
-        return $this->bookRepository->deleteBookById($id);
+        $this->bookRepository->deleteBookById($id);
+
+        return [
+            'message' => 'Book Deleted Successfully'
+        ];
     }
 }

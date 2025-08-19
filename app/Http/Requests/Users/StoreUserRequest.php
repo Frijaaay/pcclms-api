@@ -17,7 +17,7 @@ class StoreUserRequest extends FormRequest
         $newUser = new User(['user_type_id' => (int) $this->input('user_type_id')]);
 
         // Calls the policy
-        return $this->user()->can('store', $newUser);
+        return $this->user()->can('storeUser', $newUser);
     }
 
     /**

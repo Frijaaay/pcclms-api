@@ -17,7 +17,7 @@ class UserPolicy
     /**
      * Store Policy
     */
-    public function store(User $authUser, User $newUser)
+    public function storeUser(User $authUser, User $newUser)
     {
         $role = $authUser->user_type_id;
         $allowCreate = $newUser->user_type_id;
@@ -32,7 +32,7 @@ class UserPolicy
     /**
      * Update policy
      */
-    public function update(User $authUser, User $updateUser)
+    public function updateUser(User $authUser, User $updateUser)
     {
         $role = $authUser->user_type_id;
 
@@ -47,7 +47,7 @@ class UserPolicy
             default => false,
         };
     }
-    public function delete(User $authUser, User $targetUser)
+    public function deleteUser(User $authUser, User $targetUser)
     {
         $role = $authUser->user_type_id;
         $targetUserType = $targetUser->user_type_id;

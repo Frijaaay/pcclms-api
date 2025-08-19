@@ -26,11 +26,13 @@ class BookRepository implements BookRepositoryInterface
 
     public function updateBookById(int $id, array $updatedData)
     {
+        $this->model->where('id', $id)->update($updatedData);
 
+        return $this->model->findOrFail($id);
     }
 
     public function deleteBookById(int $id)
     {
-
+        return $this->model->findOrFail($id)->delete();
     }
 }

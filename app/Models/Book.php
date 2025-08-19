@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\BookCopy;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,18 +27,17 @@ class Book extends Model implements JWTSubject
         return [];
     }
 
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     // public $timestamps = false;
     protected $fillable = [
         'title',
         'author',
-        'author 1',
-        'author 2',
-        'author 3',
+        'author_1',
+        'author_2',
+        'author_3',
         'isbn',
         'category',
-        'added_date',
     ];
 
     /**

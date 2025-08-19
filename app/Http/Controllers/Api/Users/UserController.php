@@ -57,7 +57,7 @@ class UserController extends Controller
     /**
      *  Delete User
      */
-    public function delete(string $id, DeleteUserRequest $request)
+    public function delete(string $id, DeleteUserRequest $_)
     {
         return $this->userService->delete($id);
     }

@@ -45,15 +45,15 @@ class UserRepository implements UserRepositoryInterface
     public function updateUserById(string $id, array $data)
     {
         $this->model->where('id', $id)->update($data);
-
-        return $this->model->find($id);
+        
+        return $this->model->findOrFail($id);
     }
     /**
      * Delete model in users by id
      */
     public function deleteUserById(string $id)
     {
-        return $this->model->find($id)->delete();
+        return $this->model->findOrFail($id)->delete();
     }
     /**
      * Verify email token

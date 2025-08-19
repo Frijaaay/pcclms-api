@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Book;
+use App\Models\User;
 
 class BookPolicy
 {
@@ -14,18 +15,22 @@ class BookPolicy
         //
     }
 
-    public function store()
+    public function manage_book(User $authUser)
     {
-        //
+        return in_array($authUser->user_type_id, [1, 2]);
     }
+    // public function storeBook(User $authUser)
+    // {
+    //     return in_array($authUser->user_type_id, [1, 2]);
+    // }
 
-    public function update()
-    {
-        //
-    }
+    // public function updateBook(User $authUser)
+    // {
+    //     return in_array($authUser->user_type_id, [1, 2]);
+    // }
 
-    public function delete()
-    {
-
-    }
+    // public function deleteBook(User $authUser)
+    // {
+    //     return in_array($authUser->user_type_id, [1, 2]);
+    // }
 }

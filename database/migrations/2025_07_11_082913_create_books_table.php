@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('isbn')->unique();
             $table->string('category')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
