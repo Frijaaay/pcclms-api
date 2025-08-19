@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\AuthException;
+use App\Exceptions\EmailUnverifiedException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -21,18 +22,17 @@ class AuthService implements AuthServiceInterface
     public function login(array $credentials)
     {
         $token = Auth::attempt($credentials);
-
         $user = Auth::user();
 
-        if (is_null($user->email_verified_at)) {
-            Auth::logout();
-            return response()->json([
-                'message' => 'Please verify your email before logging in.'
-            ], 403);
-        }
         if(!$token) {
             throw new AuthException();
         }
+
+        if (is_null($user->email_verified_at)) {
+            Auth::logout();
+            throw new EmailUnverifiedException();
+        }
+
 
         return response()->json([
             'message' => 'Login successful',

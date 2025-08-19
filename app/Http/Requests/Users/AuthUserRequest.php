@@ -35,4 +35,11 @@ class AuthUserRequest extends FormRequest
             'password' => ['required', 'string', 'min:8']
         ];
     }
+    public function messages(): array
+    {
+        return [
+            'id_number.max' => 'ID number must not exceed the valid length',
+            'password.min' => 'Password must be at least 8 characters long',
+        ];
+    }
 }
