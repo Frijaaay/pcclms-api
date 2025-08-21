@@ -42,6 +42,15 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Schema::create('refresh_tokens', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('user_id')->constrained();
+            $table->string('token')->unique();
+            $table->timestamp('expires_at');
+            $table->boolean('revoked')->default(false);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -52,5 +61,6 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('refresh_tokens');
     }
 };

@@ -31,14 +31,14 @@ class AuthUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_number' => ['required', 'string', 'max:11'],
+            'id_number' => ['required', 'string', 'regex:/^20\d{2}-\d{6}$/'],
             'password' => ['required', 'string', 'min:8']
         ];
     }
     public function messages(): array
     {
         return [
-            'id_number.max' => 'ID number must not exceed the valid length',
+            'id_number.regex' => 'ID number is not valid',
             'password.min' => 'Password must be at least 8 characters long',
         ];
     }

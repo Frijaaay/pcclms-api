@@ -94,4 +94,9 @@ class User extends Authenticatable implements JWTSubject
     public function userType() {
         return $this->belongsTo(UserType::class); // Many to One Relationship
     }
+
+    public function refreshToken()
+    {
+        return $this->hasMany(RefreshToken::class);
+    }
 }

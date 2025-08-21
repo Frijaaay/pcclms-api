@@ -19,26 +19,40 @@ class AuthRepository implements AuthRepositoryInterface
         $this->model = $model;
     }
 
-    public function createRToken(string $id, string $hashedRToken, Carbon $expiry)
+    public function storeRefreshToken(string $id, string $refresh_token, Carbon $expiry)
     {
         return $this->rToken->create([
             'user_id' => $id,
-            'token' => $hashedRToken,
+            'token' => $refresh_token,
             'expires_at' => $expiry
         ]);
     }
 
     public function validateToken(string $token)
     {
-        return $this->rToken->where('token', hash('sha256', $token))
+        $refresh_token = $this->rToken->with('user')->where('token', $token)
             ->where('revoked', false)
             ->where('expires_at', '>', now())
-            ->first();
+            ->firstOrFail();
+
+        return $refresh_token?->user;
     }
 
-    public function revokeToken(string $token)
+    public function storeNewRefreshToken(string $id, string $refresh_token, string $new_refresh_token)
     {
-        return $this->rToken->where('token', hash('sha256', $token))
+        $refresh_token = hash('sha256', $refresh_token);
+        $new_refresh_token = hash('sha256', $new_refresh_token);
+
+        $this->rToken->where('user_id', $id)->where('token', $refresh_token)->update([
+            'token' => $new_refresh_token,
+            'expires_at' => now()->addDays(7),
+            'revoked' => false
+        ]);
+    }
+
+    public function revokeToken(?string $refresh_token)
+    {
+        return $this->rToken->where('token', hash('sha256', $refresh_token))
             ->update(['revoked' => true]) > 0;
     }
 

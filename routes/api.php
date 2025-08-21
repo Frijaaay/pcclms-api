@@ -18,6 +18,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
          */
         Route::controller(AuthController::class)->group(function () {
             Route::post('/login', 'login')->name('login');
+            Route::post('/refresh', 'refresh')->name('refresh');
             Route::middleware('jwt')->group(function () {
                 Route::get('/hydrate', 'hydrate')->name('hydrate');
                 Route::post('/logout', 'logout')->name('logout');

@@ -8,6 +8,7 @@ interface AuthServiceInterface
 
     public function hydrate();
 
-    public function logout();
+    public function logout(?string $refresh_token);
 
+    public function refresh(?string $refresh_token);
 }

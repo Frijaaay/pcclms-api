@@ -33,4 +33,18 @@ class RefreshToken extends Model
         'token',
         'expires_at'
     ];
+
+    protected $dates = [
+        'expires_at'
+    ];
+
+    protected $hidden = [
+        'user_id',
+        'token',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
