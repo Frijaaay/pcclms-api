@@ -39,12 +39,17 @@ class BookService implements BookServiceInterface
 
         $book = $this->bookRepository->create($bookData, $book_copies_count);
 
-        // $book_copies_count = $this->bookRepository->create($book);
-
         return [
             'message' => 'Book Created Successfully',
             'book' => $book
         ];
+    }
+
+    public function addCopy(int $id, $book_copies_count)
+    {
+        $book_copies_count = $book_copies_count['book_copies_count'];
+
+        return $this->bookRepository->createCopy($id, $book_copies_count);
     }
 
     public function update(int $id, array $updatedData)

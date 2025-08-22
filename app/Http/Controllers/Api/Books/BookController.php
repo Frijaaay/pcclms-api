@@ -7,6 +7,7 @@ use App\Http\Requests\Books\StoreBookRequest;
 use App\Contracts\Services\BookServiceInterface;
 use App\Http\Requests\DeleteBookRequest;
 use App\Http\Requests\UpdateBookRequest;
+use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -28,6 +29,16 @@ class BookController extends Controller
     public function store(StoreBookRequest $request)
     {
         return $this->bookService->store($request->validated());
+    }
+
+    public function addNewCopy(int $id, Request $request)
+    {
+        $book = $this->bookService->addCopy($id, $request->validate(['book_copies_count' => 'required | integer']));
+
+        return response()->json([
+            'message' => 'Added ' . $request->book_copies_count . ' copies successfully',
+            'book' => $book
+        ], 201);
     }
 
     public function update(int $id, UpdateBookRequest $request)

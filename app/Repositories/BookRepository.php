@@ -44,6 +44,24 @@ class BookRepository implements BookRepositoryInterface
         return $book->loadCount('bookCopies');
     }
 
+    public function createCopy(int $id, $book_copies_count)
+    {
+        $book = $this->model->findOrFail($id);
+
+        $book_copies = [];
+
+        for ($i = 0; $i < $book_copies_count; $i++) {
+            $book_copies[] = [
+                'book_id' => $book->id,
+                'status' => 'Available',
+                'condition' => 'New'
+            ];
+        }
+        $book->bookCopies()->createMany($book_copies);
+
+        return $book->loadCount('bookCopies');
+    }
+
     public function updateBookById(int $id, array $updatedData)
     {
         $this->model->where('id', $id)->update($updatedData);

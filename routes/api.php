@@ -47,6 +47,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::prefix('books')->name('books.')->middleware('jwt')->controller(BookController::class)->group(function () {
         Route::get('/all', 'all')->name('all');
         Route::post('/', 'store')->name('store');
+        Route::post('/{id}/add', 'addNewCopy')->name('addNewCopy');
         Route::post('/update/{id}', 'update')->name('update');
         Route::delete('/delete/{id}', 'delete')->name('delete');
     });
