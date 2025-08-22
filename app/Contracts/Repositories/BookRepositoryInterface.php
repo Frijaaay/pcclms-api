@@ -6,7 +6,7 @@ interface BookRepositoryInterface
 {
     public function getAllBooks();
 
-    public function create(array $data);
+    public function create(array $bookData, int $book_copies_count);
 
     public function updateBookById(int $id, array $updatedData);
 

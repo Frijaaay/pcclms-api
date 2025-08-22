@@ -4,11 +4,11 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\BookRepositoryInterface;
 use App\Models\Book;
+use App\Models\BookCopy;
 
 class BookRepository implements BookRepositoryInterface
 {
     private Book $model;
-
     public function __construct(Book $model)
     {
         $this->model = $model;
@@ -19,9 +19,29 @@ class BookRepository implements BookRepositoryInterface
         return $this->model->withCount('bookCopies')->get();
     }
 
-    public function create(array $data)
+    /**
+     * Create a new book and its copies.
+     *
+     * @param array $bookData Data for creating the book.
+     * @param int $book_copies_count Number of book copies to create.
+     * @return \App\Models\Book The created book model with bookCopies count loaded.
+     */
+    public function create(array $bookData, int $book_copies_count)
     {
-        return $this->model->create($data);
+        $book = $this->model->create($bookData);    // Creates a model
+
+        $book_copies = [];  // Prepare empty array
+
+        for ($i = 0; $i < $book_copies_count; $i++) {
+            $book_copies[] = [
+                'book_id' => $book->id,
+                'status' => 'Available',
+                'condition' => 'New'
+            ];
+        }
+        $book->bookCopies()->createMany($book_copies);
+
+        return $book->loadCount('bookCopies');
     }
 
     public function updateBookById(int $id, array $updatedData)

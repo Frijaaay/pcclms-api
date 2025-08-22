@@ -26,11 +26,24 @@ class BookService implements BookServiceInterface
 
     public function store(array $data)
     {
-        $data = $this->bookRepository->create($data);
+        $bookData = [
+            'title' => $data['title'],
+            'author' => $data['author'],
+            'author_1' => $data['author_1'],
+            'author_2' => $data['author_2'],
+            'author_3' => $data['author_3'],
+            'isbn' => $data['isbn'],
+            'category' => $data['category'],
+        ];
+        $book_copies_count = $data['book_copies_count'] ?? 0;
+
+        $book = $this->bookRepository->create($bookData, $book_copies_count);
+
+        // $book_copies_count = $this->bookRepository->create($book);
 
         return [
             'message' => 'Book Created Successfully',
-            'book' => $data
+            'book' => $book
         ];
     }
 
