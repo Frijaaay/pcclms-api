@@ -8,24 +8,34 @@ use App\Models\BookCopy;
 
 class BookRepository implements BookRepositoryInterface
 {
+    /** Dependency injection */
     private Book $model;
-    public function __construct(Book $model)
+    private BookCopy $modelCopy;
+    public function __construct(Book $model, BookCopy $modelCopy)
     {
         $this->model = $model;
+        $this->modelCopy = $modelCopy;
     }
 
-    public function getAllBooks()
+    /** Select all books */
+    public function all()
     {
-        return $this->model->withCount('bookCopies')->get();
+        return $this->model->withCount('availableBookCopies')->get();
     }
 
-    /**
-     * Create a new book and its copies.
-     *
-     * @param array $bookData Data for creating the book.
-     * @param int $book_copies_count Number of book copies to create.
-     * @return \App\Models\Book The created book model with bookCopies count loaded.
-     */
+    /** Select book by id */
+    public function find(int $id)
+    {
+        return $this->model->withCount('availableBookCopies')->findOrFail($id);
+    }
+
+    /** Select book copies */
+    public function findBookCopies(int $id)
+    {
+        return $this->model->with('bookCopies')->findOrFail($id)->bookCopies;
+    }
+
+    /** Create a book with book copies */
     public function create(array $bookData, int $book_copies_count)
     {
         $book = $this->model->create($bookData);    // Creates a model
@@ -35,16 +45,16 @@ class BookRepository implements BookRepositoryInterface
         for ($i = 0; $i < $book_copies_count; $i++) {
             $book_copies[] = [
                 'book_id' => $book->id,
-                'status' => 'Available',
-                'condition' => 'New'
+                'condition' => 'Good'
             ];
         }
         $book->bookCopies()->createMany($book_copies);
 
-        return $book->loadCount('bookCopies');
+        return $book->loadCount('availableBookCopies');
     }
 
-    public function createCopy(int $id, $book_copies_count)
+    /** Create a book copy */
+    public function createBookCopy(int $id, int $book_copies_count)
     {
         $book = $this->model->findOrFail($id);
 
@@ -53,24 +63,39 @@ class BookRepository implements BookRepositoryInterface
         for ($i = 0; $i < $book_copies_count; $i++) {
             $book_copies[] = [
                 'book_id' => $book->id,
-                'status' => 'Available',
-                'condition' => 'New'
+                'condition' => 'Good',
             ];
         }
         $book->bookCopies()->createMany($book_copies);
 
-        return $book->loadCount('bookCopies');
+        return $book->loadCount('availableBookCopies');
     }
 
-    public function updateBookById(int $id, array $updatedData)
+    /** Update book */
+    public function update(int $id, array $updatedData)
     {
-        $this->model->where('id', $id)->update($updatedData);
+        $book = $this->model->findOrFail($id);
+        $book->update($updatedData);
 
-        return $this->model->findOrFail($id);
+        return $book->refresh();
     }
 
-    public function deleteBookById(int $id)
+    /** Update book copy */
+    public function updateBookCopy(int $id, int $copy_id, array $updatedData)
+    {
+
+        $book = $this->model->findOrFail($id);
+        $bookCopy = $book->bookCopies()->findOrFail($copy_id);
+        $bookCopy->update($updatedData);
+
+        return $bookCopy->refresh();
+
+    }
+
+    /** Delete book */
+    public function delete(int $id)
     {
         return $this->model->findOrFail($id)->delete();
     }
+
 }

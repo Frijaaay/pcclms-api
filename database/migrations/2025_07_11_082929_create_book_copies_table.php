@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('book_copies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('book_id')->constrained('books')->onDelete('cascade');
-            $table->string('status')->default('available');
+            $table->string('status')->default('Available');
             $table->string('condition')->nullable();
             $table->timestamps();
 

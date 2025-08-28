@@ -4,14 +4,19 @@ namespace App\Contracts\Services;
 
 interface BookServiceInterface
 {
-    public function all();
+    public function getAllBooks();
 
-    public function store(array $data);
+    public function getBookById(int $id);
 
-    public function addCopy(int $id, $book_copies_count);
+    public function getBookCopies(int $id);
 
-    public function update(int $id, array $updatedData);
+    public function createBook(array $data);
 
-    public function delete(int $id);
+    public function createBookCopy(int $id, array $data);
 
+    public function updateBook(int $id, array $updatedData);
+
+    public function updateBookCopy(int $id, int $copy_id, array $updatedData);
+
+    public function deleteBook(int $id);
 }

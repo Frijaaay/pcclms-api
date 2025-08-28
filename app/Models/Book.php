@@ -40,6 +40,12 @@ class Book extends Model implements JWTSubject
         'category',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
+    ];
+
     /**
      * Appends the function status
      * @var array
@@ -50,6 +56,11 @@ class Book extends Model implements JWTSubject
         return $this->hasMany(BookCopy::class);
     }
 
+    public function availableBookCopies()
+    {
+        return $this->hasMany(BookCopy::class)->where('status', 'Available');
+    }
+
     protected $appends = ['status'];
     /**
      * Attribute function
@@ -58,7 +69,8 @@ class Book extends Model implements JWTSubject
     public function status(): Attribute
     {
         return Attribute::get(function () {
-            return $this->book_copies_count > 0 ? 'Available' : 'Unavailable';
+            return $this->availableBookCopies()
+                        ->count() > 0 ? 'Available' : 'Unavailable';
         });
     }
 }

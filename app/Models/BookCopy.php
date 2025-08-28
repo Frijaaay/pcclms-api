@@ -28,8 +28,8 @@ class BookCopy extends Model implements JWTSubject
 
     protected $fillable = [
         'book_id',
-        'status',
-        'condition'
+        'condition',
+        'status'
     ];
 
     // ORM Relationships

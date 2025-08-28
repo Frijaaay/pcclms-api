@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Api\Books;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Books\StoreBookRequest;
-use App\Contracts\Services\BookServiceInterface;
 use App\Http\Requests\DeleteBookRequest;
 use App\Http\Requests\UpdateBookRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\AddBookCopyRequest;
+use App\Http\Requests\UpdateBookCopyRequest;
+use App\Http\Requests\Books\StoreBookRequest;
+use App\Contracts\Services\BookServiceInterface;
 
 class BookController extends Controller
 {
-    /**
-     * Dependency Injection
-     */
     private BookServiceInterface $bookService;
 
     public function __construct(BookServiceInterface $bookService)
@@ -23,31 +22,81 @@ class BookController extends Controller
 
     public function all()
     {
-        return $this->bookService->all();
+        $data = $this->bookService->getAllBooks();
+
+        return response()->json([
+            'message' => $data['message'],
+            'book_count' => $data['book_count'],
+            'books' => $data['books']
+        ], 200);
+    }
+
+    public function show(int $id)
+    {
+        $data = $this->bookService->getBookById($id);
+
+        return response()->json([
+            'message' => $data['message'],
+            'book' => $data['book']
+        ], 200);
+    }
+
+    public function showBookCopies(int $id)
+    {
+        $data = $this->bookService->getBookCopies($id);
+
+        return response()->json([
+            'message' => $data['message'],
+            'book_copies' => $data['book_copies']
+        ], 200);
     }
 
     public function store(StoreBookRequest $request)
     {
-        return $this->bookService->store($request->validated());
-    }
-
-    public function addNewCopy(int $id, Request $request)
-    {
-        $book = $this->bookService->addCopy($id, $request->validate(['book_copies_count' => 'required | integer']));
+        $data = $this->bookService->createBook($request->validated());
 
         return response()->json([
-            'message' => 'Added ' . $request->book_copies_count . ' copies successfully',
-            'book' => $book
+            'message' => $data['message'],
+            'book' => $data['book']
+        ], 201);
+    }
+
+    public function storeBookCopy(int $id, AddBookCopyRequest $request)
+    {
+        $data = $this->bookService->createBookCopy($id, $request->validated());
+
+        return response()->json([
+            'message' => $data['message'],
+            'book' => $data['book']
         ], 201);
     }
 
     public function update(int $id, UpdateBookRequest $request)
     {
-        return $this->bookService->update($id, $request->validated());
+        $data = $this->bookService->updateBook($id, $request->validated());
+
+        return response()->json([
+            'message' => $data['message'],
+            'book' => $data['book']
+        ], 200);
+    }
+
+    public function updateBookCopy(int $id, int $copy_id, UpdateBookCopyRequest $request)
+    {
+        $data = $this->bookService->updateBookCopy($id, $copy_id, $request->validated());
+
+        return response()->json([
+            'message' => $data['message'],
+            'book_copy' => $data['book_copy']
+        ], 200);
     }
 
     public function delete(int $id, DeleteBookRequest $_)
     {
-        return $this->bookService->delete($id);
+        $data = $this->bookService->deleteBook($id);
+
+        return response()->json([
+            'message' => $data['message']
+        ]);
     }
 }

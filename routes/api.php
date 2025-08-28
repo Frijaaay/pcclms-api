@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\Users\UserController;
 use App\Http\Controllers\Api\Books\BookController;
 
 /**
- * Routes for api/v1
+ * V1 API Endpoints
 */
 Route::prefix('v1')->name('api.v1.')->group(function () {
     /**
@@ -46,9 +46,12 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
      */
     Route::prefix('books')->name('books.')->middleware('jwt')->controller(BookController::class)->group(function () {
         Route::get('/all', 'all')->name('all');
+        Route::get('/{id}', 'show')->name('show');
+        Route::get('/{id}/copies', 'showBookCopies')->name('showBookCopies');
         Route::post('/', 'store')->name('store');
-        Route::post('/{id}/add', 'addNewCopy')->name('addNewCopy');
+        Route::post('/{id}/add', 'storeBookCopy')->name('storeBookCopy');
         Route::post('/update/{id}', 'update')->name('update');
+        Route::post('/{id}/update/{copy_id}', 'updateBookCopy')->name('updateCopy');
         Route::delete('/delete/{id}', 'delete')->name('delete');
     });
 });
