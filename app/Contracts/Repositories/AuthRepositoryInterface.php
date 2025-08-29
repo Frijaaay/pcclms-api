@@ -6,11 +6,11 @@ use Carbon\Carbon;
 
 interface AuthRepositoryInterface
 {
-    public function storeRefreshToken(string $id, string $refresh_token, Carbon $expiry);
+    public function createRefreshToken(string $id, string $refresh_token);
 
-    public function validateToken(string $token);
+    public function validateToken(string $refresh_token);
 
-    public function storeNewRefreshToken(string $id, string $refresh_token, string $new_refresh_token);
+    public function createNewRefreshToken(string $id, string $refresh_token, string $new_refresh_token);
 
     public function revokeToken(?string $refresh_token);
 }

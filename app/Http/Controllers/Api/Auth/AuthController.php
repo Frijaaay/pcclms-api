@@ -18,17 +18,17 @@ class AuthController extends Controller
 
     public function login(AuthUserRequest $request)
     {
-        $response = $this->authService->login($request->validated());
+        $data = $this->authService->login($request->validated());
 
         return response()->json([
-            'message' => $response['message'],
-            'token' => $response['token'],
-            'user' => $response['user']
+            'message' => $data['message'],
+            'token' => $data['token'],
+            'user' => $data['user']
         ])->withCookie(
             cookie(
             name: 'refresh_token',
-            value: $response['refresh_token'],
-            minutes: $response['refresh_token_expiry'],
+            value: $data['refresh_token'],
+            minutes: $data['refresh_token_expiry'],
             path: '/',
             domain: null,
             secure: false,

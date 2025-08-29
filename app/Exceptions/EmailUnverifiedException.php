@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class EmailUnverifiedException extends Exception
 {
-    public const ERROR_CODE = 401;
+    public const ERROR_CODE = 403;
 
     public function __construct(string $message = "Please verify your email address before logging in.", int $code = self::ERROR_CODE, \Throwable $previous = null)
     {

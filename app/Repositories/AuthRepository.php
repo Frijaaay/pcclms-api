@@ -10,6 +10,7 @@ use App\Contracts\Repositories\AuthRepositoryInterface;
 
 class AuthRepository implements AuthRepositoryInterface
 {
+    /** Dependecy Injection */
     private RefreshToken $rToken;
     private User $model;
 
@@ -19,8 +20,12 @@ class AuthRepository implements AuthRepositoryInterface
         $this->model = $model;
     }
 
-    public function storeRefreshToken(string $id, string $refresh_token, Carbon $expiry)
+    /** Create expiry and stores the refresh token */
+    public function createRefreshToken(string $id, string $refresh_token)
     {
+        $expiry = Carbon::now()->addDays(7);
+        $refresh_token = hash('sha256', $refresh_token);
+
         return $this->rToken->create([
             'user_id' => $id,
             'token' => $refresh_token,
@@ -28,17 +33,21 @@ class AuthRepository implements AuthRepositoryInterface
         ]);
     }
 
-    public function validateToken(string $token)
+    /** validates refresh token */
+    public function validateToken(string $refresh_token)
     {
-        $refresh_token = $this->rToken->with('user')->where('token', $token)
+        $refresh_token = hash('sha256', $refresh_token);
+
+        $refresh_token = $this->rToken->with('user')->where('token', $refresh_token)
             ->where('revoked', false)
             ->where('expires_at', '>', now())
-            ->firstOrFail();
+            ->first();
 
         return $refresh_token?->user;
     }
 
-    public function storeNewRefreshToken(string $id, string $refresh_token, string $new_refresh_token)
+    /** update  */
+    public function createNewRefreshToken(string $id, string $refresh_token, string $new_refresh_token)
     {
         $refresh_token = hash('sha256', $refresh_token);
         $new_refresh_token = hash('sha256', $new_refresh_token);

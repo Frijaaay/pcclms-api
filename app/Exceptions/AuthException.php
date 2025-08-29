@@ -7,7 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class AuthException extends Exception
 {
-    public const ERROR_CODE = 401;
+    private const ERROR_CODE = 401;
 
     public function __construct(string $message = "Invalid Credentials", int $code = self::ERROR_CODE, \Throwable $previous = null)
     {
@@ -17,9 +17,9 @@ class AuthException extends Exception
     {
         return response()->json([
             'error' => [
-                'code' => self::ERROR_CODE,
+                'code' => $this->getCode(),
                 'message' => $this->getMessage()
             ]
-        ], self::ERROR_CODE);
+        ], $this->getCode());
     }
 }
