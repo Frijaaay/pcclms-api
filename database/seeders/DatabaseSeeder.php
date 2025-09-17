@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Setting;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\UserType;
@@ -58,6 +59,14 @@ class DatabaseSeeder extends Seeder
             'type' => 'College',
             'department' => 'CEAT',
             'status' => 'Active'
+        ]);
+
+        // Create default settings
+
+        $now = now();
+        Setting::insert([
+            ['rule_name' => 'max_borrowable', 'rule_value' => 3, 'created_at' => $now, 'updated_at' => $now],
+            ['rule_name' => 'lates_penalty', 'rule_value' => 20.00, 'created_at' => $now, 'updated_at' => $now]
         ]);
 
         // Create 10 Librarian

@@ -17,6 +17,24 @@ class BorrowedBook extends Model
     protected $keyType = 'string';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'borrower_id',
+        'book_copy_id',
+        'librarian_id',
+        'borrowed_at',
+        'due_at'
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
+    /**
     * Assign a custom unique ID to each new BorrowedBooks record.
     */
     protected static function booted()

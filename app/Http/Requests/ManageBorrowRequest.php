@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Book;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddBookCopyRequest extends FormRequest
+class ManageBorrowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,8 @@ class AddBookCopyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'book_copies_count' => ['required', 'integer']
+            'borrower_id' => ['required', 'string', 'exists:users,id'],
+            'book_copy_id' => ['required', 'integer', 'exists:book_copies,id'],
         ];
     }
 }

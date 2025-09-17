@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BorrowController;
+use App\Http\Controllers\BorrowedBookController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Users\UserController;
@@ -51,7 +53,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('/', 'store')->name('store');
         Route::post('/{id}/add', 'storeBookCopy')->name('storeBookCopy');
         Route::post('/update/{id}', 'update')->name('update');
-        Route::post('/{id}/update/{copy_id}', 'updateBookCopy')->name('updateCopy');
+        Route::post('/{id}/update/{copy_id}', 'updateBookCopy')->name('updateBookCopy');
         Route::delete('/delete/{id}', 'delete')->name('delete');
+
+        Route::post('/borrow', 'borrowBook')->name('borrowBook');
+        Route::post('/return', 'returnBook')->name('returnBook');
     });
 });
