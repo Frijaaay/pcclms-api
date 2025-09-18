@@ -34,6 +34,11 @@ class BorrowedBook extends Model
         'updated_at'
     ];
 
+    protected $casts = [
+        'borrowed_at' => 'date',
+        'due_at' => 'date'
+    ];
+
     /**
     * Assign a custom unique ID to each new BorrowedBooks record.
     */
@@ -54,5 +59,10 @@ class BorrowedBook extends Model
     public function returnRecord()
     {
         return $this->hasOne(ReturnedBook::class);
+    }
+
+    public function bookCopy()
+    {
+        return  $this->belongsTo(BookCopy::class);
     }
 }

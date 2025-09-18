@@ -37,4 +37,9 @@ class BookCopy extends Model implements JWTSubject
     {
         return $this->belongsTo(Book::class); // Many to One Relationship
     }
+
+    public function borrowedBooks()
+    {
+        return $this->hasMany(BorrowedBook::class);
+    }
 }

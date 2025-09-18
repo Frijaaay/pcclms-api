@@ -121,6 +121,13 @@ class BookController extends Controller
 
     public function returnBook(ManageReturnRequest $request)
     {
-        // $response = $this->returnService->;
+        $response = $this->returnService->returnBook($request->validated());
+
+        return response()->json([
+            'message' => $response['message'],
+            'returned_book' => $response['data']
+        ], 201);
+
+        // return response()->json(['message' => 'this is controller']);
     }
 }

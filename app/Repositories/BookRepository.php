@@ -35,6 +35,12 @@ class BookRepository implements BookRepositoryInterface
         return $this->model->with('bookCopies')->findOrFail($id)->bookCopies;
     }
 
+    /** Select book copy */
+    public function findBookCopy(int $id)
+    {
+        return $this->modelCopy->findOrFail($id);
+    }
+
     /** Create a book with book copies */
     public function create(array $bookData, int $book_copies_count)
     {
@@ -96,6 +102,32 @@ class BookRepository implements BookRepositoryInterface
     public function delete(int $id)
     {
         return $this->model->findOrFail($id)->delete();
+    }
+
+    /** Handles checking if book copy is available */
+    public function isBookAvailable(int $book_copy_id)
+    {
+        return $this->modelCopy->where('status', 'Available')->find($book_copy_id);
+    }
+
+    /** Handles book copy status and condition */
+    public function updateBookCopyStatus(int $id, ?string $condition = null)
+    {
+        $book_copy = $this->modelCopy->findOrFail($id);
+
+        if ($condition === null) {
+            $condition = $book_copy->condition;
+            $status = 'Borrowed';
+        } else {
+            $status = in_array($condition, ['Good', 'Slightly Damaged']) ? 'Available' : 'Unavailable';
+        }
+
+        $book_copy->update([
+            'status' => $status,
+            'condition' => $condition
+        ]);
+
+        return $book_copy;
     }
 
 }
