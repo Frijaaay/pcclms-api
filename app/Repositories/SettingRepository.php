@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\SettingRepositoryInterface;
 use App\Models\Setting;
 
-class SettingRepository
+class SettingRepository implements SettingRepositoryInterface
 {
     /** Dependency Injection */
     private Setting $model;
@@ -16,5 +17,10 @@ class SettingRepository
     public function getRule(string $name)
     {
         return $this->model->where('rule_name', $name)->value('rule_value');
+    }
+
+    public function updateRule(array $rule)
+    {
+        return $this->model->update($rule);
     }
 }

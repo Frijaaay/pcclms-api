@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('borrowed_book_id')->unique();
                 $table->foreign('borrowed_book_id')->references('id')->on('borrowed_books')->cascadeOnDelete();
             $table->foreignUuid('librarian_id')->constrained('users')->cascadeOnDelete();
+            $table->string('returned_condition')->nullable();
+            $table->integer('penalty')->nullable();
             $table->timestamp('returned_at')->useCurrent();
             $table->timestamps();
         });

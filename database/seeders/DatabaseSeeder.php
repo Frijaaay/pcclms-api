@@ -66,7 +66,9 @@ class DatabaseSeeder extends Seeder
         $now = now();
         Setting::insert([
             ['rule_name' => 'max_borrowable', 'rule_value' => 3, 'created_at' => $now, 'updated_at' => $now],
-            ['rule_name' => 'lates_penalty', 'rule_value' => 20.00, 'created_at' => $now, 'updated_at' => $now]
+            ['rule_name' => 'late_penalty_per_day', 'rule_value' => 20, 'created_at' => $now, 'updated_at' => $now],
+            ['rule_name' => 'lost_penalty', 'rule_value' => 200, 'created_at' => $now, 'updated_at' => $now],
+            ['rule_name' => 'damaged_penalty', 'rule_value' => 50, 'created_at' => $now, 'updated_at' => $now]
         ]);
 
         // Create 10 Librarian
