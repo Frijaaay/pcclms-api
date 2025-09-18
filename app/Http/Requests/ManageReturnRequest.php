@@ -23,7 +23,9 @@ class ManageReturnRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'borrow_id' => ['required', 'string', 'exists:borrowed_books,id']
+            'borrow_id' => ['required', 'string'],
+            'borrower_id' => ['required', 'string', 'exists:users,id'],
+            'condition' => ['required', 'string']
         ];
     }
 }

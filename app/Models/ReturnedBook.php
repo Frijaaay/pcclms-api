@@ -15,6 +15,23 @@ class ReturnedBook extends Model
 
     protected $keyType = 'string';
 
+    protected $fillable = [
+        'borrowed_book_id',
+        'librarian_id',
+        'returned_condition',
+        'penalty',
+        'returned_at'
+    ];
+
+    protected $casts = [
+        'returned_at' => 'date'
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
     /**
     * Assign a custom unique ID to each new ReturnedBooks record.
     */
