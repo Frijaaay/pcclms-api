@@ -14,12 +14,7 @@ use App\Contracts\Repositories\AuthRepositoryInterface;
 class AuthService implements AuthServiceInterface
 {
     /** Dependency Injection */
-    private AuthRepositoryInterface $authRepository;
-
-    public function __construct(AuthRepositoryInterface $authRepository)
-    {
-        $this->authRepository = $authRepository;
-    }
+    public function __construct(private AuthRepositoryInterface $authRepository) {}
 
     /** Login method */
     public function login(array $credentials)

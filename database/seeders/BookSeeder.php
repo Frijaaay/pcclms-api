@@ -29,18 +29,19 @@ class BookSeeder extends Seeder
         }
 
         /** Seeder for borrowed_books
-         * and returned_books
-         * table
+         * and returned_books table
         */
-        // $borrowed_books = BorrowedBook::factory(50)->create();
+        $borrowed_books = BorrowedBook::factory(50)->create();
 
-        // $borrowed_books->each(function ($borrowed_books) {
-        //     if (fake()->boolean(75)) {
-        //         ReturnedBook::factory()->create([
-        //             'borrowed_book_id' => $borrowed_books->id,
-        //             'returned_at' => fake()->dateTimeBetween($borrowed_books->borrowed_at, $borrowed_books->due_at),
-        //         ]);
-        //     }
-        // });
+        $borrowed_books->each(function ($borrowed_books) {
+            if (fake()->boolean(75)) {
+                ReturnedBook::factory()->create([
+                    'borrowed_book_id' => $borrowed_books->id,
+                    'returned_at' => fake()->dateTimeBetween($borrowed_books->borrowed_at, $borrowed_books->due_at),
+                    'returned_condition' => fake()->randomElement(['Good', 'Slightly Damaged', 'Severely Damaged', 'Lost']),
+                    'penalty' => fake()->randomElement([50, 100, 200, 0]),
+                ]);
+            }
+        });
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Books\ReportController;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\BorrowedBookController;
 use Illuminate\Support\Facades\Route;
@@ -58,5 +59,15 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
         Route::post('/borrow', 'borrowBook')->name('borrowBook');
         Route::post('/return', 'returnBook')->name('returnBook');
+    });
+
+    /**
+     * api/v1/reports
+     */
+    Route::prefix('reports')->name('reports.')->middleware('jwt')->controller(ReportController::class)->group(function () {
+        Route::get('/all', 'all')->name('allReports');
+        Route::prefix('borrowed')->name('borrowed.')->group(function () {
+
+        });
     });
 });

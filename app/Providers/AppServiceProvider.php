@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Contracts\Services\BorrowServiceInterface;
+use App\Contracts\Services\ReportServiceInterface;
 use App\Contracts\Services\ReturnServiceInterface;
 use App\Services\BookService;
 use App\Services\AuthService;
 use App\Services\BorrowService;
+use App\Services\ReportService;
 use App\Services\ReturnService;
 use App\Services\UserService;
 use Illuminate\Routing\UrlGenerator;
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(BookServiceInterface::class, BookService::class);
         $this->app->bind(BorrowServiceInterface::class, BorrowService::class);
         $this->app->bind(ReturnServiceInterface::class, ReturnService::class);
+        $this->app->bind(ReportServiceInterface::class, ReportService::class);
     }
 
     /**

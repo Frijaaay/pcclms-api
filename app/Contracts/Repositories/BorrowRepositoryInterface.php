@@ -9,4 +9,6 @@ interface BorrowRepositoryInterface
     public function getBorrowed(string $id);
 
     public function store(array $data);
+
+    public function findActiveBorrows();
 }

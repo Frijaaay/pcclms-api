@@ -28,6 +28,12 @@ class BorrowRepository implements BorrowRepositoryInterface
         return $this->countActiveBorrows($id);
     }
 
+    /** Retrieves all borrowed book records that have not been returned. */
+    public function findActiveBorrows()
+    {
+        return $this->model->whereDoesntHave('returnRecord')->get();
+    }
+
     /** Stores a borrow book record */
     public function store(array $data)
     {

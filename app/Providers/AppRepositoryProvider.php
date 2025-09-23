@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Contracts\Repositories\BorrowRepositoryInterface;
+use App\Contracts\Repositories\ReportRepositoryInterface;
 use App\Contracts\Repositories\ReturnRepositoryInterface;
 use App\Contracts\Repositories\SettingRepositoryInterface;
 use App\Repositories\AuthRepository;
 use App\Repositories\BookRepository;
 use App\Repositories\BorrowRepository;
+use App\Repositories\ReportRepository;
 use App\Repositories\ReturnRepository;
 use App\Repositories\SettingRepository;
 use App\Repositories\UserRepository;
@@ -29,6 +31,7 @@ class AppRepositoryProvider extends ServiceProvider
         $this->app->bind(BookRepositoryInterface::class, BookRepository::class);
         $this->app->bind(BorrowRepositoryInterface::class, BorrowRepository::class);
         $this->app->bind(ReturnRepositoryInterface::class, ReturnRepository::class);
+        $this->app->bind(ReportRepositoryInterface::class, ReportRepository::class);
         $this->app->bind(SettingRepositoryInterface::class, SettingRepository::class);
     }
 
