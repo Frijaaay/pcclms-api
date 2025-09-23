@@ -66,8 +66,13 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
      */
     Route::prefix('reports')->name('reports.')->middleware('jwt')->controller(ReportController::class)->group(function () {
         Route::get('/all', 'all')->name('allReports');
-        Route::prefix('borrowed')->name('borrowed.')->group(function () {
 
+        Route::prefix('borrowed')->name('borrowed.')->group(function () {
+            Route::get('/all', 'allBorrowed')->name('allBorrowed');
+        });
+
+        Route::prefix('returned')->name('returned')->group(function () {
+            Route::get('/all', 'allReturned')->name('allReturned');
         });
     });
 });
