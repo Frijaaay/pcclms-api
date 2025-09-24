@@ -6,20 +6,11 @@ use App\Contracts\Repositories\BorrowRepositoryInterface;
 use App\Models\BookCopy;
 use App\Models\BorrowedBook;
 
-class BorrowRepository implements BorrowRepositoryInterface
+class BorrowRepository extends BaseRepository implements BorrowRepositoryInterface
 {
-    /** Dependency Injection */
-    private BorrowedBook $model;
-    public function __construct(BorrowedBook $borrowedBook, BookCopy $bookCopy)
+    public function __construct(BorrowedBook $model, BookCopy $bookCopy)
     {
-        $this->model = $borrowedBook;
-    }
-
-
-    /** Get borrow record */
-    public function getById(string $id)
-    {
-        return $this->model->find($id);
+        parent::__construct($model);
     }
 
     /** Get number of borrowed books by user */
@@ -32,12 +23,6 @@ class BorrowRepository implements BorrowRepositoryInterface
     public function findActiveBorrows()
     {
         return $this->model->whereDoesntHave('returnRecord')->get();
-    }
-
-    /** Stores a borrow book record */
-    public function store(array $data)
-    {
-        return $this->model->create($data);
     }
 
     /** Handles checking the number of borrowed books by user */

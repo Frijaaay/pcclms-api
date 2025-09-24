@@ -2,48 +2,54 @@
 
 namespace App\Services;
 
-use App\Contracts\Repositories\BorrowRepositoryInterface as BorrowRepo;
-use App\Contracts\Repositories\ReportRepositoryInterface as ReportRepo;
-use App\Contracts\Repositories\ReturnRepositoryInterface as ReturnRepo;
-use App\Contracts\Repositories\UserRepositoryInterface;
+use App\Contracts\Repositories\BorrowRepositoryInterface;
+use App\Contracts\Repositories\ReportRepositoryInterface;
+use App\Contracts\Repositories\ReturnRepositoryInterface;
 use App\Contracts\Services\ReportServiceInterface;
-use Illuminate\Database\Eloquent\Collection;
-
-class ReportService implements ReportServiceInterface
+class ReportService extends BaseService implements ReportServiceInterface
 {
-
     public function __construct(
-        private BorrowRepo $borrowRepo,
-        private ReturnRepo $returnRepo,
-        private ReportRepo $reportRepo
-        ) {}
+        private ReportRepositoryInterface $reportRepository,
+        private BorrowRepositoryInterface $borrowRepository,
+        private ReturnRepositoryInterface $returnRepository
+        )
+        {
+            parent::__construct($reportRepository);
+        }
 
-    private function arrayReturn(string $message, Collection $data)
+    public function getAllBorrowed()
     {
-        return [
-            'message' => $message,
-            'data' => $data
-        ];
+        return $this->serviceReturn($this->borrowRepository->all());
     }
 
-    /**
-     * Handles retrieving all records
-     */
-    public function getAllRecord()
+    public function getAllReturned()
     {
-        return $this->arrayReturn('Reports successfully retrieved', $this->reportRepo->all());
+        return $this->serviceReturn($this->returnRepository->all());
     }
 
-    /**
-     * Handles retrieving all active borrow records
-     */
-    public function getActiveBorrows()
+    public function getBorrowedById(string $id)
     {
-        $data = $this->borrowRepo->findActiveBorrows();
-
-        return [
-            'message' => 'Active borrow records successfully retrieved',
-            'data' => $data
-        ];
+        return $this->serviceReturn($this->borrowRepository->findById($id));
     }
+
+    public function getReturnedById(string $id)
+    {
+        return $this->serviceReturn($this->returnRepository->findById($id));
+    }
+
+    public function getReportByBorrower(string $id)
+    {
+        return $this->serviceReturn($this->reportRepository->findByBorrowerId($id));
+    }
+
+    public function getBorrowedByBorrower(string $id)
+    {
+
+    }
+
+    public function getReturnedByBorrower(string $id)
+    {
+
+    }
+
 }

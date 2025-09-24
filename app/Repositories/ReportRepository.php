@@ -6,6 +6,7 @@ use App\Contracts\Repositories\ReportRepositoryInterface;
 use App\Models\BorrowedBook;
 use App\Models\ReturnedBook;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class ReportRepository implements ReportRepositoryInterface
 {
@@ -14,13 +15,12 @@ class ReportRepository implements ReportRepositoryInterface
      */
     public function __construct(private BorrowedBook $borrowedBook, private ReturnedBook $returnedBook) {}
 
-
     /**
-     * Retrieves all transactions
+     * Base query for reports
      */
-    public function all(): Collection
+    private function reportQuery()
     {
-        $reports = $this->borrowedBook
+        return $this->borrowedBook
             ->join('book_copies', 'borrowed_books.book_copy_id', '=', 'book_copies.id')
             ->join('books', 'book_copies.book_id', '=', 'books.id')
             ->join('users as borrower', 'borrowed_books.borrower_id', '=', 'borrower.id')
@@ -37,8 +37,27 @@ class ReportRepository implements ReportRepositoryInterface
                 'returned_books.returned_at',
                 'returned_books.returned_condition',
                 'returned_books.penalty',
-                )->get();
+                );
+    }
 
-        return $reports;
+    /**
+     * Retrieves all transactions
+     */
+    public function all(): Collection
+    {
+        return $this->reportQuery()->get();
+    }
+
+    /**
+     * Retreives a transaction by specific ID.
+     */
+    public function findById(mixed $id): ?Model
+    {
+        return $this->reportQuery()->where('borrowed_books.id', $id)->first();
+    }
+
+    public function findByBorrowerId(string $id): ?Collection
+    {
+        return $this->reportQuery()->whereBorrowerId($id)->get();
     }
 }

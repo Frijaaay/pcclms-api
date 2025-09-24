@@ -7,19 +7,36 @@ use App\Http\Controllers\Controller;
 
 class ReportController extends Controller
 {
-    /** Halimaw ka talaga prof x */
     public function __construct(protected ReportServiceInterface $reportService) {}
 
     /** All report records */
     public function all()
     {
-        return $this->returnJsonResponse($this->reportService->getAllRecord());
+        return $this->returnJsonResponse($this->reportService->getAll());
     }
 
-    /** All currently borrowed books record */
-    public function currentlyBorrowed()
+    public function show(string $id)
     {
-        return $this->returnJsonResponse($this->reportService->getActiveBorrows());
+        return $this->returnJsonResponse($this->reportService->getById($id));
     }
 
+    public function allBorrowed()
+    {
+        return $this->returnJsonResponse($this->reportService->getAllBorrowed());
+    }
+
+    public function showBorrowedById(string $id)
+    {
+        return $this->returnJsonResponse($this->reportService->getBorrowedById($id));
+    }
+
+    public function allReturned()
+    {
+        return $this->returnJsonResponse($this->reportService->getAllReturned());
+    }
+
+    public function showReturnedById(string $id)
+    {
+        return $this->returnJsonResponse($this->reportService->getReturnedById($id));
+    }
 }

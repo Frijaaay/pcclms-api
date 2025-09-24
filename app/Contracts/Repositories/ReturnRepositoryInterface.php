@@ -4,8 +4,7 @@ namespace App\Contracts\Repositories;
 
 use App\Models\BorrowedBook;
 
-interface ReturnRepositoryInterface
+interface ReturnRepositoryInterface extends BaseRepositoryInterface
 {
-    public function store(array $data);
 
 }
