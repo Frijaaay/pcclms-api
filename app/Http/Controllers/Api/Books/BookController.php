@@ -16,18 +16,11 @@ use App\Http\Requests\ManageReturnRequest;
 
 class BookController extends Controller
 {
-    private BookServiceInterface $bookService;
-    private BorrowServiceInterface $borrowService;
-    private ReturnServiceInterface $returnService;
-
-    public function __construct(BookServiceInterface $bookService,
-    BorrowServiceInterface $borrowService,
-    ReturnServiceInterface $returnService)
-    {
-        $this->bookService = $bookService;
-        $this->borrowService = $borrowService;
-        $this->returnService = $returnService;
-    }
+    public function __construct(
+        private BookServiceInterface $bookService,
+        private BorrowServiceInterface $borrowService,
+        private ReturnServiceInterface $returnService
+        ) {}
 
     public function all()
     {

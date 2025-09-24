@@ -10,31 +10,23 @@ use App\Contracts\Repositories\ReturnRepositoryInterface;
 use App\Exceptions\InvalidRequestException;
 use Carbon\Carbon;
 
-class ReturnService implements ReturnServiceInterface
+class ReturnService extends BaseService implements ReturnServiceInterface
 {
-    /** Dependency Injection */
-    private ReturnRepositoryInterface $returnRepository;
-    private BorrowRepositoryInterface $borrowRepository;
-    private SettingRepositoryInterface $settingRepository;
-    private BookRepositoryInterface $bookRepository;
     public function __construct(
-        ReturnRepositoryInterface $returnRepository,
-        BorrowRepositoryInterface $borrowRepository,
-        SettingRepositoryInterface $settingRepository,
-        BookRepositoryInterface $bookRepository
+        private ReturnRepositoryInterface $returnRepository,
+        private BorrowRepositoryInterface $borrowRepository,
+        private SettingRepositoryInterface $settingRepository,
+        private BookRepositoryInterface $bookRepository
         )
-    {
-        $this->returnRepository = $returnRepository;
-        $this->borrowRepository = $borrowRepository;
-        $this->settingRepository = $settingRepository;
-        $this->bookRepository = $bookRepository;
-    }
+        {
+            parent::__construct($returnRepository);
+        }
 
     /** Handles book returning */
     public function returnBook(array $data)
     {
         /** Checks the borrow record */
-        $borrowed_book = $this->borrowRepository->getById($data['borrow_id']);
+        $borrowed_book = $this->borrowRepository->findById($data['borrow_id']);
         if(!$borrowed_book) {
             throw new InvalidRequestException("Transaction doesn't exist", 404);
         }
