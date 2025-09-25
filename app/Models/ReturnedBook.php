@@ -24,8 +24,8 @@ class ReturnedBook extends Model
     ];
 
     protected $casts = [
-        'returned_at' => 'date:M/d/y',
-        'due_at' => 'date:M/d/y'
+        'returned_at' => 'date:M-d-Y',
+        'due_at' => 'date:M-d-Y'
     ];
 
     protected $hidden = [
