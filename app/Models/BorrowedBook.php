@@ -35,8 +35,8 @@ class BorrowedBook extends Model
     ];
 
     protected $casts = [
-        'borrowed_at' => 'date',
-        'due_at' => 'date'
+        'borrowed_at' => 'date:M/d/y',
+        'due_at' => 'date:M/d/y'
     ];
 
     /**
