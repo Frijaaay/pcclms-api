@@ -28,6 +28,7 @@ class ReportRepository implements ReportRepositoryInterface
             ->leftJoin('returned_books', 'borrowed_books.id', '=', 'returned_books.borrowed_book_id')
             ->select(
                 'borrowed_books.id',
+                'returned_books.id as return_id',
                 'books.title',
                 'books.author',
                 'borrower.name as borrower_name',
@@ -39,6 +40,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'returned_books.returned_at',
                 'returned_books.returned_condition',
                 'returned_books.penalty',
+                'returned_books.penalty_fee_status'
                 );
     }
 

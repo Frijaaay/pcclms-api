@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignUuid('librarian_id')->constrained('users')->cascadeOnDelete();
             $table->string('returned_condition')->nullable();
             $table->integer('penalty')->nullable();
+            $table->string('penalty_fee_status')->nullable()->default('Unpaid');
             $table->timestamp('returned_at')->useCurrent();
             $table->timestamps();
         });
