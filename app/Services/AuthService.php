@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Exceptions\AuthException;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Illuminate\Support\Facades\Auth;
 use App\Exceptions\EmailUnverifiedException;
 use App\Contracts\Services\AuthServiceInterface;
 use App\Contracts\Repositories\AuthRepositoryInterface;
@@ -133,8 +132,8 @@ class AuthService implements AuthServiceInterface
     {
             $user = auth()->user();
 
-            if(!$user) {
-                throw new AuthException();
+            if(!$user && !$this->validateRefreshToken($refresh_token)) {
+                throw new AuthException('Unauthorized Request');
             }
 
             $new_access_token = JWTAuth::refresh(true, true);

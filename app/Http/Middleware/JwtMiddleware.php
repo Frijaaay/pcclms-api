@@ -24,8 +24,8 @@ class JwtMiddleware
             if (!$user) {
                 return response()->json([
                     'error' => [
-                        'message' => 'Unauthorized',
-                        'code' => '401'
+                        'code' => '401',
+                        'message' => 'Unauthorized'
                         ]
                     ], 401);
             }
@@ -34,8 +34,8 @@ class JwtMiddleware
         } catch (Exception $e) {
             return response()->json([
                 'error' => [
-                    'message' => 'Unauthorized Request',
-                    'code' => 401
+                    'code' => 401,
+                    'message' => 'Unauthorized Request'
                 ]
             ], 401);
         }
