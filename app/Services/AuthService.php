@@ -18,13 +18,49 @@ class AuthService implements AuthServiceInterface
      */
     public function __construct(private AuthRepositoryInterface $authRepository) {}
 
-    /**
-      * Handle user login
-      */
+    /** Create a refresh token */
+    private function createRefreshToken(string $user_id)
+    {
+        $refresh_token = Str::random(64);
+        $expires_at = Carbon::now()->addDays(7);
+
+        $data = [
+            'user_id' => $user_id,
+            'token' => hash('sha256',$refresh_token),
+            'expires_at' => $expires_at
+        ];
+
+        if (!$this->authRepository->store($data)) {
+            throw new AuthException('Internal Server Error', 500);
+        }
+
+        return [
+            'value' => $refresh_token,
+            'expires_at' => now()->diffInMinutes($expires_at)
+        ];
+    }
+
+    /** Validate a refresh token */
+    private function validateRefreshToken(?string $refresh_token)
+    {
+        // If no refresh token received
+        if (!$refresh_token) {
+            throw new AuthException('Invalid Refresh Token', 401);
+        }
+        // if  refresh token is invalid or expired
+        $user = $this->authRepository->validateToken($refresh_token);
+        if (!$user) {
+            throw new AuthException('Invalid Refresh Token', 401);
+        }
+
+        return $user;
+    }
+
+    /** Logins the user and issues the tokens*/
     public function login(array $credentials)
     {
         // Attempts to login the credentials given and get a access token
-        $access_token = auth()->attempt($credentials);
+        $access_token = JWTAuth::attempt($credentials);
 
         // If login failed, throw an exception
         if(!$access_token) {
@@ -44,35 +80,56 @@ class AuthService implements AuthServiceInterface
 
         return [
             'message' => 'Login is successful',
-            'token' => [
-                'type' => 'Bearer',
-                'value' => $access_token,
-                'expires_in' => JWTAuth::factory()->getTTL()
+            'data' => [
+                'token' => [
+                    'type' => 'Bearer',
+                    'value' => $access_token,
+                    'expires_in' => JWTAuth::factory()->getTTL() * 60
+                ],
+                'user' => $authUser->load('userType'),
             ],
-            'user' => $authUser->load('userType'),
             'refresh_token' => $refresh_token['value'],
             'refresh_token_expiry' => $refresh_token['expires_at']
         ];
     }
 
-    /** Create a refresh token */
-    private function createRefreshToken(string $user_id)
+    /** Refresh both token */
+    public function refresh(?string $refresh_token)
     {
-        $refresh_token = Str::random(64);
-        $expires_at = Carbon::now()->addDays(7);
+        // Call refresh token validator
+        $user = $this->validateRefreshToken($refresh_token);
+        // Get new access token from user
+        $access_token = JWTAuth::fromUser($user);
+        // Generate new refresh token
+        $new_refresh_token = Str::random(64);
 
-        if (!$this->authRepository->storeRefreshToken($user_id, hash('sha256',$refresh_token), $expires_at)) {
-            throw new AuthException('Internal Server Error', 500);
-        }
+        $data = [
+            'old_token' => hash('sha256', $refresh_token),
+            'new_token' => [
+                'token' => hash('sha256', $new_refresh_token),
+                'expires_at' => now()->addDays(7),
+                'revoked' => false
+                ]
+        ];
+        // Rotates the refresh token
+        $this->authRepository->update($user->id, $data);
 
         return [
-            'value' => $refresh_token,
-            'expires_at' => now()->diffInMinutes($expires_at)
+            'message' => 'Token refreshed',
+            'data' => [
+                'token' => [
+                    'type' => 'Bearer',
+                    'value' => $access_token,
+                    'expires_in' => JWTAuth::factory()->getTTL() * 60
+                ],
+            ],
+            'refresh_token' => $new_refresh_token,
+            'refresh_token_expiry' => 7 * 24 * 60
         ];
     }
 
-    /** Hydrate user data */
-    public function hydrate()
+    /** Get the authenticated user and issue a new access token */
+    public function hydrate(?string $refresh_token)
     {
             $user = auth()->user();
 
@@ -80,48 +137,31 @@ class AuthService implements AuthServiceInterface
                 throw new AuthException();
             }
 
-            $user->load('userType');
+            $new_access_token = JWTAuth::refresh(true, true);
 
             return [
                 'message' => 'Hydrated',
-                'user' => $user
+                'data' => [
+                    'token' => [
+                        'type' => 'Bearer',
+                        'value' => $new_access_token,
+                        'expires_in' => JWTAuth::factory()->getTTL() * 60
+                    ],
+                    'user' => $user
+                ],
             ];
     }
 
-    /** Logout method */
+    /** Logouts user and invalidates both access and refresh token */
     public function logout(?string $refresh_token)
     {
-            JWTAuth::invalidate(Auth::getToken());
-            auth()->logout();
+        // Revokes Refresh Token
+        $this->authRepository->revokeToken(hash('sha256', $refresh_token));
 
-            $this->authRepository->revokeToken($refresh_token);
+        // Invalidates access token and logouts user
+        auth()->logout();
 
-            return ['message' => 'Successfully logged out'];
+        return 'Successfully logged out';
     }
 
-    /** Refresh both token */
-    public function refresh(?string $refresh_token)
-    {
-        if (!$refresh_token) {
-            throw new AuthException('Invalid Refresh Token', 401);  // If no refresh token received
-        }
-
-        $user = $this->authRepository->validateToken($refresh_token);
-
-        if (!$user) {
-            throw new AuthException('Invalid Refresh Token', 401);  // if  refresh token is invalid or expired
-        }
-
-        $access_token = JWTAuth::fromUser($user);
-        $new_refresh_token = Str::random(64);
-
-        $this->authRepository->createNewRefreshToken($user->id, $refresh_token, $new_refresh_token);
-
-        return [
-            'token' => $access_token,
-            'expires_in' => JWTAuth::factory()->getTTL(),
-            'refresh_token' => $new_refresh_token,
-            'refresh_token_expiry' => 7 * 24 * 60
-        ];
-    }
 }

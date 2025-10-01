@@ -2,36 +2,26 @@
 
 namespace App\Repositories;
 
-use Carbon\Carbon;
-use App\Models\User;
 use App\Models\RefreshToken;
+use Illuminate\Database\Eloquent\Model;
 use App\Contracts\Repositories\AuthRepositoryInterface;
 
-class AuthRepository implements AuthRepositoryInterface
+class AuthRepository extends BaseRepository implements AuthRepositoryInterface
 {
     /**
      * Constructor Property Promotion
      */
-    public function __construct(private RefreshToken $rToken, private User $model) {}
-
-    /**
-      * Stores the refresh token
-      */
-    public function storeRefreshToken(string $id, string $refresh_token, Carbon $expires_at)
+    public function __construct(RefreshToken $model)
     {
-        return $this->rToken->create([
-            'user_id' => $id,
-            'token' => $refresh_token,
-            'expires_at' => $expires_at
-        ]);
+        parent::__construct($model);
     }
 
-    /** validates refresh token */
+    /** Validates refresh token */
     public function validateToken(string $refresh_token)
     {
         $hashed_refresh_token = hash('sha256', $refresh_token);
 
-        $valid_refresh_token = $this->rToken->with('user')->where('token', $hashed_refresh_token)
+        $valid_refresh_token = $this->model->with('user')->where('token', $hashed_refresh_token)
             ->where('revoked', false)
             ->where('expires_at', '>', now())
             ->first();
@@ -44,24 +34,24 @@ class AuthRepository implements AuthRepositoryInterface
         return $valid_refresh_token?->user;
     }
 
-    /** Update refresh token*/
-    public function createNewRefreshToken(string $id, string $refresh_token, string $new_refresh_token)
+    /** rotates refresh token*/
+    public function update(mixed $id, array $data): ?Model
     {
-        $refresh_token = hash('sha256', $refresh_token);
-        $new_refresh_token = hash('sha256', $new_refresh_token);
+        $model = $this->model->where('user_id', $id)->where('token', $data['old_token'])->first();
 
-        $this->rToken->where('user_id', $id)->where('token', $refresh_token)->update([
-            'token' => $new_refresh_token,
-            'expires_at' => now()->addDays(7),
-            'revoked' => false
-        ]);
+        if (!$model) {
+            return null;
+        }
+
+        $model->update($data['new_token']);
+
+        return $model;
     }
 
     /** Revokes token */
     public function revokeToken(?string $refresh_token)
     {
-        return $this->rToken->where('token', hash('sha256', $refresh_token))
+        return $this->model->where('token', $refresh_token)
             ->update(['revoked' => true]) > 0;
     }
-
 }
