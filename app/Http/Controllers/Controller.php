@@ -2,20 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use App\Traits\ApiResponseTrait;
 
 abstract class Controller
 {
-    /**
-     * Return JSON Responses
-     * @param array $response The response array containing message and data.
-     * @param int $status The HTTP status code for the response.
-     */
-    protected function returnJsonResponse(array $response, int $status = 200): JsonResponse
+    use ApiResponseTrait;
+
+    public function __construct(protected $service) {}
+
+    public function all()
     {
-        return response()->json([
-            'message' => $response['message'],
-            'content' => $response['data']
-        ], $status);
+        return $this->handleSuccessResponse($this->service->getAll());
     }
+
+    public function show(mixed $id)
+    {
+        return $this->handleSuccessResponse($this->service->getById($id));
+    }
+
+    public function store(Request $request)
+    {
+        $response = $this->service->create($request->validated() ?? $request->all());
+
+        return $this->handleSuccessResponse($response['data'], $response['message'], 201);
+    }
+
+    public function update(Request $request, mixed $id)
+    {
+        $response = $this->service->update($id, $request->validated() ?? $request->all());
+
+        return $this->handleSuccessResponse($response['data'], $response['message']);
+    }
+
+    public function delete(mixed $id)
+    {
+        return $this->handleSuccessResponse(null, $this->service->delete($id));
+    }
+
 }
