@@ -5,31 +5,24 @@ namespace App\Repositories;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\RefreshToken;
-use App\Exceptions\AuthException;
 use App\Contracts\Repositories\AuthRepositoryInterface;
 
 class AuthRepository implements AuthRepositoryInterface
 {
-    /** Dependecy Injection */
-    private RefreshToken $rToken;
-    private User $model;
+    /**
+     * Constructor Property Promotion
+     */
+    public function __construct(private RefreshToken $rToken, private User $model) {}
 
-    public function __construct(RefreshToken $rToken, User $model)
+    /**
+      * Stores the refresh token
+      */
+    public function storeRefreshToken(string $id, string $refresh_token, Carbon $expires_at)
     {
-        $this->rToken = $rToken;
-        $this->model = $model;
-    }
-
-    /** Create expiry and stores the refresh token */
-    public function createRefreshToken(string $id, string $refresh_token)
-    {
-        $expiry = Carbon::now()->addDays(7);
-        $refresh_token = hash('sha256', $refresh_token);
-
         return $this->rToken->create([
             'user_id' => $id,
             'token' => $refresh_token,
-            'expires_at' => $expiry
+            'expires_at' => $expires_at
         ]);
     }
 

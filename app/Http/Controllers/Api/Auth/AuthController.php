@@ -9,36 +9,40 @@ use App\Contracts\Services\AuthServiceInterface;
 
 class AuthController extends Controller
 {
-    private AuthServiceInterface $authService;
+    /**
+      * Constructor property promotion
+      */
+    public function __construct(private AuthServiceInterface $authService) {}
 
-    public function __construct(AuthServiceInterface $authService)
-    {
-        $this->authService = $authService;
-    }
-
+    /**
+     * Handles login method
+     */
     public function login(AuthUserRequest $request)
     {
-        $data = $this->authService->login($request->validated());
+        $response = $this->authService->login($request->validated());
 
         return response()->json([
-            'message' => $data['message'],
-            'token' => $data['token'],
-            'user' => $data['user']
+            'message' => $response['message'],
+            'token' => $response['token'],
+            'user' => $response['user']
         ])->withCookie(
             cookie(
             name: 'refresh_token',
-            value: $data['refresh_token'],
-            minutes: $data['refresh_token_expiry'],
-            path: '/',
+            value: $response['refresh_token'],
+            minutes: $response['refresh_token_expiry'],
+            path: '/api/v1/auth',
             domain: null,
-            secure: false,
+            secure: env('SESSION_SECURE_COOKIE', app()->environment('production')),
             httpOnly: true,
             raw: false,
-            sameSite: 'Strict'
+            sameSite: 'strict'
             )
         );
     }
 
+    /**
+     * Handles app hydration method
+     */
     public function hydrate()
     {
         $response = $this->authService->hydrate();
@@ -68,10 +72,18 @@ class AuthController extends Controller
                 'value' => $response['token'],
                 'expires_in' => $response['expires_in']
             ]
-        ])->cookie(
-            'refresh_token',
-            $response['refresh_token'],
-            $response['refresh_token_expiry']
+        ])->withCookie(
+            cookie(
+            name: 'refresh_token',
+            value: $response['refresh_token'],
+            minutes: $response['refresh_token_expiry'],
+            path: '/api/v1/auth',
+            domain: null,
+            secure: false,
+            httpOnly: true,
+            raw: false,
+            sameSite: 'strict'
+            )
         );
     }
 }

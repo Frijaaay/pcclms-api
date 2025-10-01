@@ -5,10 +5,11 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Http\JsonResponse;
 
-class InvalidRequestException extends Exception
+class RequestValidationNotMetException extends Exception
 {
-    public const ERROR_CODE = 200;
-    public function __construct(string $message = "Invalid Request", int $code = self::ERROR_CODE, \Throwable $previous = null)
+    private const ERROR_CODE = 422;
+
+    public function __construct(string $message = "Validation Failed", int $code = self::ERROR_CODE, \Throwable $previous = null)
     {
         parent::__construct($message, $code);
     }

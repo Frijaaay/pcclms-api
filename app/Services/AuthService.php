@@ -13,25 +13,34 @@ use App\Contracts\Repositories\AuthRepositoryInterface;
 
 class AuthService implements AuthServiceInterface
 {
-    /** Dependency Injection */
+    /**
+     * Constructor Property Promotion
+     */
     public function __construct(private AuthRepositoryInterface $authRepository) {}
 
-    /** Login method */
+    /**
+      * Handle user login
+      */
     public function login(array $credentials)
     {
+        // Attempts to login the credentials given and get a access token
         $access_token = auth()->attempt($credentials);
 
+        // If login failed, throw an exception
         if(!$access_token) {
             throw new AuthException();
         }
 
+        // Get the authenticated user
         $authUser = auth()->user();
 
+        // Checks if the user is verified
         if (is_null($authUser->email_verified_at)) {
             throw new EmailUnverifiedException();
         }
 
-        $refresh_token = $this->generateRefreshToken($authUser->id);
+        // Generate a refresh token
+        $refresh_token = $this->createRefreshToken($authUser->id);
 
         return [
             'message' => 'Login is successful',
@@ -40,22 +49,26 @@ class AuthService implements AuthServiceInterface
                 'value' => $access_token,
                 'expires_in' => JWTAuth::factory()->getTTL()
             ],
-            'user' => $authUser,
-            'refresh_token' => $refresh_token,
-            'refresh_token_expiry' => 60 * 24 * 7
+            'user' => $authUser->load('userType'),
+            'refresh_token' => $refresh_token['value'],
+            'refresh_token_expiry' => $refresh_token['expires_at']
         ];
     }
 
-    /** Create refresh token */
-    private function generateRefreshToken(string $user_id)
+    /** Create a refresh token */
+    private function createRefreshToken(string $user_id)
     {
         $refresh_token = Str::random(64);
+        $expires_at = Carbon::now()->addDays(7);
 
-        if (!$this->authRepository->createRefreshToken($user_id, $refresh_token)) {
+        if (!$this->authRepository->storeRefreshToken($user_id, hash('sha256',$refresh_token), $expires_at)) {
             throw new AuthException('Internal Server Error', 500);
         }
 
-        return $refresh_token;
+        return [
+            'value' => $refresh_token,
+            'expires_at' => now()->diffInMinutes($expires_at)
+        ];
     }
 
     /** Hydrate user data */

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Users;
 
+use App\Exceptions\RequestValidationNotMetException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AuthUserRequest extends FormRequest
@@ -39,7 +40,15 @@ class AuthUserRequest extends FormRequest
     {
         return [
             'id_number.regex' => 'ID number is not valid',
-            'password.min' => 'Password must be at least 8 characters long',
+            'password.min' => 'Invalid password',
         ];
+    }
+
+    /**
+     * Handles a failed validation.
+     */
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new RequestValidationNotMetException($validator->errors()->first());
     }
 }
