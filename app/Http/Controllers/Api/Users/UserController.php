@@ -13,15 +13,12 @@ use Symfony\Component\HttpFoundation\Exception\ExpiredSignedUriException;
 class UserController extends Controller
 {
     use AuthorizesRequests;
-    /**
-     * Dependency Injection
-     */
-    private UserServiceInterface $userService;
 
-    public function __construct(UserServiceInterface $userService)
-    {
-        $this->userService = $userService;
-    }
+    /**
+      * Constructor property promotion
+      */
+    public function __construct(private UserServiceInterface $userService) {}
+
     /**
      * Get all librarians
      */

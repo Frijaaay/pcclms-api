@@ -16,6 +16,9 @@ use App\Http\Requests\ManageReturnRequest;
 
 class BookController extends Controller
 {
+    /**
+      * Constructor property promotion
+      */
     public function __construct(
         private BookServiceInterface $bookService,
         private BorrowServiceInterface $borrowService,

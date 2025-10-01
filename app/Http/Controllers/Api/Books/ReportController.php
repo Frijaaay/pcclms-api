@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 
 class ReportController extends Controller
 {
+    /**
+      * Constructor property promotion
+      */
     public function __construct(protected ReportServiceInterface $reportService) {}
 
     /** All report records */
