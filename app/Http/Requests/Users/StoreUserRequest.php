@@ -5,6 +5,7 @@ namespace App\Http\Requests\Users;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Exceptions\RequestValidationNotMetException;
 
 class StoreUserRequest extends FormRequest
 {
@@ -43,8 +44,16 @@ class StoreUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.regex' => 'The email must be a valid member of the domain pcc.edu.ph (e.g., 2023-123456@pcc.edu.ph)'
+            'email.regex' => 'The email must be a valid member of the domain pcc.edu.ph (e.g., 2023-123456@pcc.edu.ph)',
+            'email.unique' => 'Email is already taken',
+            'id_number.regex' => 'ID Number is invalid',
+            'id_number.unique' => 'ID Number is already taken'
         ];
+    }
+
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
+    {
+        throw new RequestValidationNotMetException($validator->errors()->first());
     }
 
     /**

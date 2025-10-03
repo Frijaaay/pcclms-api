@@ -42,8 +42,10 @@ class UpdateUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'id_number.regex' => 'The ID No format is incorrect or not valid (e.g. 2025-123456)',
-            'email.regex' => 'The email must be a valid member of the domain pcc.edu.ph (e.g., 2025-123456@pcc.edu.ph)'
+            'email.regex' => 'The email must be a valid member of the domain pcc.edu.ph (e.g., 2023-123456@pcc.edu.ph)',
+            'email.unique' => 'Email is already taken',
+            'id_number.regex' => 'ID Number is invalid',
+            'id_number.unique' => 'ID Number is already taken'
         ];
     }
 }
