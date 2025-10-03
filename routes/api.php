@@ -13,36 +13,31 @@ use App\Http\Controllers\Api\Books\BookController;
 */
 Route::prefix('v1')->name('api.v1.')->group(function () {
     /**
-     * Routes for api/v1/auth
+     * Routes for api/v1/auth endpoint
      */
-    Route::prefix('auth')->name('auth.')->group(function () {
-        /**
-         * Routes that uses AuthController
-         */
-        Route::controller(AuthController::class)->group(function () {
-            Route::post('/login', 'login')->name('login');
-            Route::post('/refresh', 'refresh')->name('refresh');
-            Route::middleware('jwt')->group(function () {
-                Route::get('/hydrate', 'hydrate')->name('hydrate');
-                Route::post('/logout', 'logout')->name('logout');
-            });
+    Route::prefix('auth')->controller(AuthController::class)->name('auth.')->group(function () {
+        Route::post('/login', 'login')->name('login');
+        Route::post('/refresh', 'refresh')->name('refresh');
+        Route::middleware('jwt')->group(function () {
+            Route::get('/hydrate', 'hydrate')->name('hydrate');
+            Route::post('/logout', 'logout')->name('logout');
         });
     });
     /**
      * Routes for api/v1/users
     */
     Route::prefix('users')->controller(UserController::class)->name('users.')->group(function () {
-        /**
-        * Email Verification Routes
-        */
-        Route::get('/email/verify/{id}/{email_token}', 'verifyEmail')->whereUuid('id')->name('email.verification');
         Route::middleware('jwt')->group(function () {
-            Route::get('/librarians', 'allLibrarians')->name('allLibrarians');
-            Route::get('/borrowers', 'allBorrowers')->name('allBorrowers');
-            Route::post('/', 'store')->name('store');
+            Route::get('/', 'all')->name('all_users');
+            Route::post('/', 'store')->name('store_user');
+            Route::get('/librarians', 'allLibrarians')->name('all_librarians');
+            Route::get('/borrowers', 'allBorrowers')->name('all_borrowers');
+            Route::get('/{id}', 'show')->whereUuid('id')->name('show_user');
             Route::post('/update/{id}', 'update')->whereUuid('id')->name('update');
             Route::delete('/delete/{id}', 'delete')->whereUuid('id')->name('delete');
         });
+        /** Email Verification Route */
+        Route::get('/email/verify/{id}/{email_token}', 'verifyEmail')->whereUuid('id')->name('email.verification');
     });
     /**
      * api/v1/books
