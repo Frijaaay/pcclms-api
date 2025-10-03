@@ -14,17 +14,18 @@ class UserController extends Controller
 {
     use AuthorizesRequests;
 
-    /**
-      * Constructor property promotion
-      */
-    public function __construct(private UserServiceInterface $userService) {}
+    public function __construct(UserServiceInterface $service)
+    {
+        parent::__construct($service);
+    }
 
     /**
      * Get all librarians
      */
     public function allLibrarians()
     {
-        return $this->userService->getAllLibrarians();
+        $response = $this->service->getAllLibrarians();
+        return $this->handleSuccessResponse($response['data'], $response['message']);
     }
 
     /**
@@ -32,7 +33,8 @@ class UserController extends Controller
      */
     public function allBorrowers()
     {
-        return $this->userService->getAllBorrowers();
+        $response = $this->service->getAllBorrowers();
+        return $this->handleSuccessResponse($response['data'], $response['message']);
     }
 
     /**
@@ -40,7 +42,8 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        return $this->userService->store($request->validated());
+        $response = $this->service->create($request->validated());
+        return $this->handleSuccessResponse($response['data'], $response['message'], 201);
     }
 
     /**
@@ -48,7 +51,8 @@ class UserController extends Controller
      */
     public function update(string $id, UpdateUserRequest $request)
     {
-        return $this->userService->update($id, $request->validated());
+        $response = $this->service->update($id, $request->validated());
+        return $this->handleSuccessResponse($response['data'], $response['message']);
     }
 
     /**
@@ -56,12 +60,16 @@ class UserController extends Controller
      */
     public function delete(string $id, DeleteUserRequest $_)
     {
-        return $this->userService->delete($id);
+        $response = $this->service->delete($id);
+        return $this->handleSuccessResponse($response['data'], $response['message']);
     }
 
+    /**
+     * Verify user email
+     */
     public function verifyEmail(string $id, $token)
     {
-        if (!$this->userService->email_verification($id, $token)) {
+        if (!$this->service->email_verification($id, $token)) {
             throw new ExpiredSignedUriException();
         }
         return view('email-verified');
