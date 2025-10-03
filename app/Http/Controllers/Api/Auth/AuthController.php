@@ -21,23 +21,7 @@ class AuthController
     public function login(AuthUserRequest $request): JsonResponse
     {
         $response = $this->authService->login($request->validated());
-
-        return response()->json([
-            'message' => $response['message'],
-            'content' => $response['data']
-        ])->withCookie(
-            cookie(
-            name: 'refresh_token',
-            value: $response['refresh_token'],
-            minutes: $response['refresh_token_expiry'],
-            path: '/api/v1/auth',
-            domain: null,
-            secure: env('SESSION_SECURE_COOKIE', app()->environment('production')),
-            httpOnly: true,
-            raw: false,
-            sameSite: 'strict'
-            )
-        );
+        return $this->handleWithCookieResponse($response['data'], $response['cookie'], $response['message']);
     }
 
     /**
@@ -46,23 +30,7 @@ class AuthController
     public function refresh(Request $request): JsonResponse
     {
         $response = $this->authService->refresh($request->cookie('refresh_token'));
-
-        return response()->json([
-            'message' => 'Token refreshed',
-            'content' => $response['data']
-        ])->withCookie(
-            cookie(
-            name: 'refresh_token',
-            value: $response['refresh_token'],
-            minutes: $response['refresh_token_expiry'],
-            path: '/api/v1/auth',
-            domain: null,
-            secure: false,
-            httpOnly: true,
-            raw: false,
-            sameSite: 'strict'
-            )
-        );
+        return $this->handleWithCookieResponse($response['data'], $response['cookie'], $response['message']);
     }
 
     /**
@@ -71,7 +39,6 @@ class AuthController
     public function hydrate(Request $request): JsonResponse
     {
         $response = $this->authService->hydrate($request->cookie('refresh_token'));
-
         return $this->handleSuccessResponse($response['data'], $response['message']);
     }
 
@@ -81,7 +48,6 @@ class AuthController
     public function logout(Request $request): JsonResponse
     {
         $response = $this->authService->logout($request->cookie('refresh_token'));
-
         return $this->handleSuccessResponse(null, $response);
     }
 }

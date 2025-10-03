@@ -87,8 +87,11 @@ class AuthService implements AuthServiceInterface
                 ],
                 'user' => $authUser->load('userType'),
             ],
-            'refresh_token' => $refresh_token['value'],
-            'refresh_token_expiry' => $refresh_token['expires_at']
+            'cookie' => [
+                'name' => 'refresh_token',
+                'value' => $refresh_token['value'],
+                'expiry' => $refresh_token['expires_at']
+            ]
         ];
     }
 
@@ -120,10 +123,13 @@ class AuthService implements AuthServiceInterface
                     'type' => 'Bearer',
                     'value' => $access_token,
                     'expires_in' => JWTAuth::factory()->getTTL() * 60
-                ],
+                ]
             ],
-            'refresh_token' => $new_refresh_token,
-            'refresh_token_expiry' => 7 * 24 * 60
+            'cookie' => [
+                'name' => 'refresh_token',
+                'value' => $new_refresh_token,
+                'expiry' => 7 * 24 * 60
+            ]
         ];
     }
 
