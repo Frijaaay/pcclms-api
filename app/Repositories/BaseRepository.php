@@ -10,7 +10,7 @@ abstract class BaseRepository
     /**
      * Create a new class instance.
      */
-    public function __construct(protected Model $model) {}
+    public function __construct(protected readonly Model $model) {}
 
     public function all(): Collection
     {
@@ -19,7 +19,7 @@ abstract class BaseRepository
 
     public function findById(mixed $id): ?Model
     {
-        return $this->model->find($id);
+        return $this->model->findOrFail($id);
     }
 
     public function store(array $data): ?Model
@@ -40,7 +40,7 @@ abstract class BaseRepository
         return $model;
     }
 
-    public function delete(mixed $id): Bool
+    public function delete(mixed $id): ?Bool
     {
         $model = $this->model->find($id);
 
@@ -49,7 +49,7 @@ abstract class BaseRepository
         }
 
         if ($model->delete()) {
-            return true;
+            return null;
         }
 
         return false;

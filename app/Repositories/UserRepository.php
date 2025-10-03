@@ -6,21 +6,17 @@ use App\Models\User;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use Symfony\Component\HttpFoundation\Exception\ExpiredSignedUriException;
 
-class UserRepository implements UserRepositoryInterface
+class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
-    /**
-     * Dependency Injection
-     */
-    private User $model;
-
     public function __construct(User $model)
     {
-        $this->model = $model;
+        parent::__construct($model);
     }
+
     /**
      * Gets all models that are librarians
      */
-    public function selectAllLibrarians()
+    public function findAllLibrarians()
     {
         return $this->model->where('user_type_id', '=', 2)->orderBy('status')->get();
     }
@@ -28,37 +24,15 @@ class UserRepository implements UserRepositoryInterface
     /**
      * Gets all models that are borrowers
      */
-    public function selectAllBorrowers()
+    public function findAllBorrowers()
     {
         return $this->model->where('user_type_id', '=', 3)->orderBy('status')->get();
     }
-    /**
-     * Creates new model in users
-     */
-    public function createUser(array $data)
-    {
-        return $this->model->create($data);
-    }
-    /**
-     * Update model in users by id
-     */
-    public function updateUserById(string $id, array $data)
-    {
-        $this->model->where('id', $id)->update($data);
-        
-        return $this->model->findOrFail($id);
-    }
-    /**
-     * Delete model in users by id
-     */
-    public function deleteUserById(string $id)
-    {
-        return $this->model->findOrFail($id)->delete();
-    }
+
     /**
      * Verify email token
      */
-    public function verifyEmailToken(string $id, $email_token)
+    public function validateEmailToken(string $id, $email_token)
     {
         $user = $this->model->findOrFail($id);
 
