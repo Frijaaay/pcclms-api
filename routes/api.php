@@ -40,7 +40,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('/email/verify/{id}/{email_token}', 'verifyEmail')->whereUuid('id')->name('email.verification');
     });
     /**
-     * api/v1/books
+     * Routes for api/v1/books
      */
     Route::prefix('books')->name('books.')->middleware('jwt')->controller(BookController::class)->group(function () {
         Route::get('/all', 'all')->name('all');

@@ -6,62 +6,38 @@ use App\Contracts\Repositories\BookRepositoryInterface;
 use App\Contracts\Services\BookServiceInterface;
 use Exception;
 
-class BookService implements BookServiceInterface
+class BookService extends BaseService implements BookServiceInterface
 {
     /**
      * Dependency Injection
      */
-    private BookRepositoryInterface $bookRepository;
-
-    public function __construct(BookRepositoryInterface $bookRepository)
+    public function __construct(BookRepositoryInterface $repository)
     {
-        $this->bookRepository = $bookRepository;
+        parent::__construct($repository);
     }
 
     /**
-     * Get all books method
-     */
-    public function getAllBooks()
-    {
-        $data = $this->bookRepository->all();
-
-        return [
-            'message' => 'Books Retrieved Successfully',
-            'book_count' => count($data),
-            'books' => $data->sortBy('status')->values()
-        ];
-    }
-
-    /**
-     * Get book by id
-     */
-    public function getBookById(int $id)
-    {
-        $data = $this->bookRepository->find($id);
-
-        return [
-            'message' => 'Book Retrieved Successfully',
-            'book' => $data
-        ];
-    }
-
-    /**
-     * Get book copies
+     * Get copies of book
      */
     public function getBookCopies(int $id)
     {
-        $data = $this->bookRepository->findBookCopies($id);
+        $data = $this->repository->findBookCopies($id);
+        return $this->serviceArrayReturn($data, 'Book Copies Retrieved Successfully');
+    }
 
-        return [
-            'message' => 'Book Copies Retrieved Successfully',
-            'book_copies' => $data
-        ];
+    /**
+     * Get book copy
+     */
+    public function getBookCopyById(int $id)
+    {
+        $data = $this->repository->findBookCopy($id);
+        return $this->serviceArrayReturn($data, );
     }
 
     /**
      * Create book
      */
-    public function createBook(array $data)
+    public function create(array $data): Array
     {
         $book_data = [
             'title' => $data['title'],
@@ -72,14 +48,12 @@ class BookService implements BookServiceInterface
             'isbn' => $data['isbn'],
             'category' => $data['category'],
         ];
+
         $book_copies_count = $data['book_copies_count'] ?? 0;
 
-        $data = $this->bookRepository->create($book_data, $book_copies_count);
+        $data = $this->repository->create($book_data, $book_copies_count);
 
-        return [
-            'message' => 'Book Created Successfully',
-            'book' => $data
-        ];
+        return $this->serviceArrayReturn($data, 'Book Created Successfully');
     }
 
     /**
@@ -88,26 +62,8 @@ class BookService implements BookServiceInterface
     public function createBookCopy(int $id, array $data)
     {
         $book_copies_count = $data['book_copies_count'];
-
-        $data = $this->bookRepository->createBookCopy($id, $book_copies_count);
-
-        return [
-            'message' => 'Added ' . $book_copies_count . ' copies successfully',
-            'book' => $data
-        ];
-    }
-
-    /**
-     * Update Book
-     */
-    public function updateBook(int $id, array $updatedData)
-    {
-        $data = $this->bookRepository->update($id, $updatedData);
-
-        return [
-            'message' => 'Book Updated Successfully',
-            'book' => $data
-        ];
+        $data = $this->repository->createBookCopy($id, $book_copies_count);
+        return $this->serviceArrayReturn($data, "Added {$book_copies_count} copies successfully");
     }
 
     /**
@@ -115,17 +71,13 @@ class BookService implements BookServiceInterface
      */
     public function updateBookCopy(int $id, int $copy_id, array $updatedData)
     {
-        $data = $this->bookRepository->updateBookCopy($id, $copy_id, $updatedData);
-
-        return [
-            'message' => 'Book copy updated successfully',
-            'book_copy' => $data
-        ];
+        $data = $this->repository->updateBookCopy($id, $copy_id, $updatedData);
+        return $this->serviceArrayReturn($data, 'Book copy updated successfully');
     }
 
     public function deleteBook(int $id)
     {
-        if (!$this->bookRepository->delete($id)) {
+        if (!$this->repository->delete($id)) {
             throw new Exception('Deleting failed', 500);
         }
 

@@ -6,7 +6,7 @@ use App\Contracts\Repositories\BookRepositoryInterface;
 use App\Models\Book;
 use App\Models\BookCopy;
 
-class BookRepository implements BookRepositoryInterface
+class BookRepository extends BaseRepository implements BookRepositoryInterface
 {
     /** Dependency injection */
     private Book $model;
