@@ -8,16 +8,12 @@ use Illuminate\Support\Facades\Mail;
 use App\Contracts\Services\UserServiceInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 
-class UserService implements UserServiceInterface
+class UserService extends BaseService implements UserServiceInterface
 {
-    /**
-     * Dependency Injection
-     */
-    private UserRepositoryInterface $userRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserRepositoryInterface $repository)
     {
-        $this->userRepository = $userRepository;
+        parent::__construct($repository);
     }
 
     /**
@@ -25,12 +21,7 @@ class UserService implements UserServiceInterface
      */
     public function getAllLibrarians()
     {
-        $librarians = $this->userRepository->selectAllLibrarians();
-
-        return [
-            'librarian_count' => count($librarians),
-            'librarians' => $librarians
-        ];
+        return $this->serviceArrayReturn($this->repository->findAllLibrarians());
     }
 
     /**
@@ -38,66 +29,29 @@ class UserService implements UserServiceInterface
      */
     public function getAllBorrowers()
     {
-        $borrowers = $this->userRepository->selectAllBorrowers();
-
-        return [
-            'borrower_count' => count($borrowers),
-            'borrowers' => $borrowers
-        ];
+        return $this->serviceArrayReturn($this->repository->findAllBorrowers());
     }
 
     /**
      * Create User
      */
-    public function store(array $userData)
+    public function create(array $data): Array
     {
-        $user = $this->userRepository->createUser($userData);
+        $user = $this->repository->store($data);
 
-        $plainPassword = $userData['plain_password'];
-        unset($userData['plain_password']);
+        $plainPassword = $data['plain_password'];
+        unset($data['plain_password']);
 
-        /**
-         * Send Email to the created user's email
-        */
-
+        /** Send Welcome Email */
         Mail::to($user->email)->send(new UserCreatedMail(
             $user->name,
             $user->id_number,
             $plainPassword
         ));
-
+        /** Send Verify Email */
         Mail::to($user->email)->send(new VerifyUserEmail($user->id, $user->email_verification_token));
 
-
-        return [
-            'message' => 'User created successfully',
-            'user' => $user
-        ];
-    }
-
-    /**
-     * Update User
-     */
-    public function update(string $id, array $updatedUser)
-    {
-        $user = $this->userRepository->updateUserById($id, $updatedUser);
-
-        return [
-            'message' => 'User profile updated successfully',
-            'user' => $user
-        ];
-    }
-
-    /**
-     * Delete User
-     */
-    public function delete(string $id)
-    {
-        $this->userRepository->deleteUserById($id);
-
-        return [
-            'message' => 'User deleted successfully',
-        ];
+        return $this->serviceArrayReturn($user, 'User created successfully');
     }
 
     /**
@@ -105,7 +59,7 @@ class UserService implements UserServiceInterface
      */
     public function email_verification(string $id, $email_token)
     {
-        $user = $this->userRepository->verifyEmailToken($id, $email_token);
+        $user = $this->repository->validateEmailToken($id, $email_token);
         if (!$user) {
             throw new \ErrorException('Something went wrong', 412);
         }

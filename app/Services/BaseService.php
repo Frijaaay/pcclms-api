@@ -2,14 +2,20 @@
 
 namespace App\Services;
 
+use App\Contracts\Repositories\BaseRepositoryInterface;
+use App\Exceptions\InvalidRequestException;
+
 abstract class BaseService
 {
     /**
-     * Create a new class instance.
+     * Summary of constructor
+     * @template TRepository of BaseRepositoryInterface
+     * @var TRepository
+     * @param TRepository $repository
      */
-    public function __construct(protected $repository) {}
+    public function __construct(protected readonly BaseRepositoryInterface $repository) {}
 
-    protected function serviceReturn(mixed $data, string $message = "Data retrieved successfully")
+    protected function serviceArrayReturn(mixed $data, string $message = "Data retrieved successfully"): Array
     {
         return [
             'message' => $message,
@@ -17,28 +23,28 @@ abstract class BaseService
         ];
     }
 
-    public function getAll()
+    public function getAll(): Array
     {
-        return $this->serviceReturn($this->repository->all());
+        return $this->serviceArrayReturn($this->repository->all());
     }
 
-    public function getById($id)
+    public function getById(mixed $id): Array
     {
-        return $this->serviceReturn($this->repository->findById($id));
+        return $this->serviceArrayReturn($this->repository->findById($id));
     }
 
-    public function create($data)
+    public function create(array $data): Array
     {
-        return $this->serviceReturn($this->repository->store($data), "Create success");
+        return $this->serviceArrayReturn($this->repository->store($data), "Create success");
     }
 
-    public function update($id, $data)
+    public function update(mixed $id, array $data): Array
     {
-        return $this->serviceReturn($this->repository->update($id, $data), "Update success");
+        return $this->serviceArrayReturn($this->repository->update($id, $data), "Update success");
     }
 
-    public function delete($id)
+    public function delete(mixed $id): Array
     {
-        return $this->serviceReturn($this->repository->delete($id), "Delete success");
+        return $this->serviceArrayReturn($this->repository->delete($id), "Delete success");
     }
 }

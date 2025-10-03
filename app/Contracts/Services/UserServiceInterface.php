@@ -2,17 +2,9 @@
 
 namespace App\Contracts\Services;
 
-interface UserServiceInterface
+interface UserServiceInterface extends BaseServiceInterface
 {
     public function getAllLibrarians();
-
     public function getAllBorrowers();
-
-    public function store(array $userData);
-
-    public function update(string $id, array $updatedUser);
-
-    public function delete(string $id);
-
     public function email_verification(string $id, $email_token);
 }
