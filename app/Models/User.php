@@ -91,12 +91,18 @@ class User extends Authenticatable implements JWTSubject
     }
 
     // ORM Relationship
-    public function userType() {
+    public function userType()
+    {
         return $this->belongsTo(UserType::class); // Many to One Relationship
     }
 
     public function refreshToken()
     {
         return $this->hasMany(RefreshToken::class);
+    }
+
+    public function borrowedBooks()
+    {
+        return $this->hasMany(BorrowedBook::class, 'borrower_id');
     }
 }

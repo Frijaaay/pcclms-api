@@ -33,6 +33,11 @@ class BorrowRepository extends BaseRepository implements BorrowRepositoryInterfa
             )->get();
     }
 
+    public function findByBorrowerId(string $id): ?Collection
+    {
+        return $this->model->whereBorrowerId($id)->get();
+    }
+
     /** Get number of borrowed books by user */
     public function getBorrowed(string $id)
     {

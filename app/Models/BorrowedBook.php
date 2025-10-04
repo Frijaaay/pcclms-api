@@ -64,6 +64,11 @@ class BorrowedBook extends Model
 
     public function bookCopy()
     {
-        return  $this->belongsTo(BookCopy::class);
+        return $this->belongsTo(BookCopy::class);
+    }
+
+    public function borrower()
+    {
+        return $this->belongsTo(User::class, 'borrower_id');
     }
 }

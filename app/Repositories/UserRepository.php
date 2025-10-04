@@ -46,4 +46,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
         return $user;
     }
+
+    public function findBorrowedBooks(string $id)
+    {
+        return $this->model->findOrFail($id)->borrowedBooks;
+    }
 }
