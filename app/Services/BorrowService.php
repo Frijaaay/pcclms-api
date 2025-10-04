@@ -12,19 +12,14 @@ use Carbon\Carbon;
 class BorrowService implements BorrowServiceInterface
 {
     /** Dependecy Injection */
-    private BorrowRepositoryInterface $borrowRepository;
-    private SettingRepositoryInterface $settingRepository;
-    private BookRepositoryInterface $bookRepository;
+    // private BorrowRepositoryInterface $borrowRepository;
+    // private SettingRepositoryInterface $settingRepository;
+    // private BookRepositoryInterface $bookRepository;
     public function __construct(
-        BorrowRepositoryInterface $borrowRepository,
-        BookRepositoryInterface $bookRepository,
-        SettingRepositoryInterface $settingRepository
-        )
-    {
-        $this->borrowRepository = $borrowRepository;
-        $this->bookRepository = $bookRepository;
-        $this->settingRepository = $settingRepository;
-    }
+        private BorrowRepositoryInterface $borrowRepository,
+        private BookRepositoryInterface $bookRepository,
+        private SettingRepositoryInterface $settingRepository
+        ) {}
 
     /** Handles borrowing of book */
     public function borrowBook(array $data)
@@ -37,6 +32,9 @@ class BorrowService implements BorrowServiceInterface
         if(!$this->bookRepository->isBookAvailable($data['book_copy_id'])) {
             throw new InvalidRequestException('Book is Unavailable', 404);
         }
+
+        /** This set the copy status into borrowed */
+        $this->bookRepository->updateBookCopyStatus($data['book_copy_id'], null);
 
         $librarian_id = auth()->user()->id;
         $borrowed_at = Carbon::now();

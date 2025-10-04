@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Books;
 
+use App\Contracts\Repositories\BookRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Books\DeleteBookRequest;
 use App\Http\Requests\ManageBorrowRequest;
@@ -19,12 +20,27 @@ class BookController extends Controller
     /**
       * Constructor property promotion
       */
-    public function __construct(BookServiceInterface $service,
+    public function __construct(
+        private BookServiceInterface $bookService,
+        private BookRepositoryInterface $bookRepository,
         private BorrowServiceInterface $borrowService,
         private ReturnServiceInterface $returnService
-        )
+        ) {}
+
+        /**
+         * Get all book
+         */
+    public function all()
     {
-        parent::__construct($service);
+        return $this->handleSuccessResponse($this->bookRepository->all());
+    }
+
+    /**
+     * Get book by id
+     */
+    public function show(int $id)
+    {
+        return $this->handleSuccessResponse($this->bookRepository->findById($id));
     }
 
     /**
@@ -32,8 +48,7 @@ class BookController extends Controller
      */
     public function showBookCopies(int $id)
     {
-        $response = $this->service->getBookCopies($id);
-        return $this->handleSuccessResponse($response['data'], $response['message']);
+        return $this->handleSuccessResponse($this->bookRepository->findBookCopies($id));
     }
 
     /**
@@ -41,7 +56,7 @@ class BookController extends Controller
      */
     public function store(StoreBookRequest $request)
     {
-        $response = $this->service->create($request->validated());
+        $response = $this->bookService->create($request->validated());
         return $this->handleSuccessResponse($response['data'], $response['message'], 201);
     }
 
@@ -50,7 +65,7 @@ class BookController extends Controller
      */
     public function storeBookCopy(int $id, AddBookCopyRequest $request)
     {
-        $response = $this->service->createBookCopy($id, $request->validated());
+        $response = $this->bookService->createBookCopy($id, $request->validated());
         return $this->handleSuccessResponse($response['data'], $response['message'], 201);
     }
 
@@ -59,7 +74,7 @@ class BookController extends Controller
      */
     public function update(int $id, UpdateBookRequest $request)
     {
-        $response = $this->service->update($id, $request->validated());
+        $response = $this->bookService->update($id, $request->validated());
         return $this->handleSuccessResponse($response['data'], $response['message']);
     }
 
@@ -68,7 +83,7 @@ class BookController extends Controller
      */
     public function updateBookCopy(int $id, int $copy_id, UpdateBookCopyRequest $request)
     {
-        $response = $this->service->updateBookCopy($id, $copy_id, $request->validated());
+        $response = $this->bookService->updateBookCopy($id, $copy_id, $request->validated());
         return $this->handleSuccessResponse($response['data'], $response['message']);
     }
 
@@ -77,7 +92,7 @@ class BookController extends Controller
      */
     public function delete(int $id, DeleteBookRequest $_)
     {
-        $response = $this->service->delete($id);
+        $response = $this->bookService->delete($id);
         return $this->handleSuccessResponse($response['data'], $response['message']);
     }
 

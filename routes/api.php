@@ -43,7 +43,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
      * Routes for api/v1/books
      */
     Route::prefix('books')->name('books.')->middleware('jwt')->controller(BookController::class)->group(function () {
-        Route::get('/all', 'all')->name('all');
+        Route::get('/', 'all')->name('all');
         Route::get('/{id}', 'show')->name('show');
         Route::get('/{id}/copies', 'showBookCopies')->name('showBookCopies');
         Route::post('/', 'store')->name('store');

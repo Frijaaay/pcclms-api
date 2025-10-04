@@ -2,37 +2,35 @@
 
 namespace App\Repositories;
 
-use App\Contracts\Repositories\BookRepositoryInterface;
 use App\Models\Book;
 use App\Models\BookCopy;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
+use App\Contracts\Repositories\BookRepositoryInterface;
 
 class BookRepository extends BaseRepository implements BookRepositoryInterface
 {
-    /** Dependency injection */
-    private Book $model;
-    private BookCopy $modelCopy;
-    public function __construct(Book $model, BookCopy $modelCopy)
+    public function __construct(Book $model, private BookCopy $modelCopy)
     {
-        $this->model = $model;
-        $this->modelCopy = $modelCopy;
+        parent::__construct($model);
     }
 
     /** Select all books */
-    public function all()
+    public function all(): Collection
     {
         return $this->model->withCount('availableBookCopies')->get();
     }
 
     /** Select book by id */
-    public function find(int $id)
+    public function findById(mixed $id): ?Model
     {
         return $this->model->withCount('availableBookCopies')->findOrFail($id);
     }
 
-    /** Select book copies */
+    /** Select book with its available copies */
     public function findBookCopies(int $id)
     {
-        return $this->model->with('bookCopies')->findOrFail($id)->bookCopies;
+        return $this->model->select(['id', 'title', 'author'])->with('availableBookCopies')->findOrFail($id);
     }
 
     /** Select book copy */
@@ -77,15 +75,6 @@ class BookRepository extends BaseRepository implements BookRepositoryInterface
         return $book->loadCount('availableBookCopies');
     }
 
-    /** Update book */
-    public function update(int $id, array $updatedData)
-    {
-        $book = $this->model->findOrFail($id);
-        $book->update($updatedData);
-
-        return $book->refresh();
-    }
-
     /** Update book copy */
     public function updateBookCopy(int $id, int $copy_id, array $updatedData)
     {
@@ -96,12 +85,6 @@ class BookRepository extends BaseRepository implements BookRepositoryInterface
 
         return $bookCopy->refresh();
 
-    }
-
-    /** Delete book */
-    public function delete(int $id)
-    {
-        return $this->model->findOrFail($id)->delete();
     }
 
     /** Handles checking if book copy is available */
@@ -119,7 +102,7 @@ class BookRepository extends BaseRepository implements BookRepositoryInterface
             $condition = $book_copy->condition;
             $status = 'Borrowed';
         } else {
-            $status = in_array($condition, ['Good', 'Slightly Damaged']) ? 'Available' : 'Unavailable';
+            $status = $this->determineStatus($condition);
         }
 
         $book_copy->update([
@@ -130,4 +113,10 @@ class BookRepository extends BaseRepository implements BookRepositoryInterface
         return $book_copy;
     }
 
+    protected function determineStatus(string $condition)
+    {
+        return in_array($condition, ['Good', 'Slightly Damaged'])
+            ? 'Available'
+            : 'Unavailable';
+    }
 }

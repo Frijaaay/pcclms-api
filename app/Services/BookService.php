@@ -17,24 +17,6 @@ class BookService extends BaseService implements BookServiceInterface
     }
 
     /**
-     * Get copies of book
-     */
-    public function getBookCopies(int $id)
-    {
-        $data = $this->repository->findBookCopies($id);
-        return $this->serviceArrayReturn($data, 'Book Copies Retrieved Successfully');
-    }
-
-    /**
-     * Get book copy
-     */
-    public function getBookCopyById(int $id)
-    {
-        $data = $this->repository->findBookCopy($id);
-        return $this->serviceArrayReturn($data, );
-    }
-
-    /**
      * Create book
      */
     public function create(array $data): Array
