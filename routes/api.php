@@ -65,11 +65,13 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::prefix('borrowed')->name('borrowed.')->group(function () {
             Route::get('/all', 'allBorrowed')->name('allBorrowed');
             Route::get('/{id}', 'showBorrowedById')->name('showBorrowedById');
+            Route::get('/user/{id}', 'showByBorrowerId')->name('showBorrowedByBorrowerId');
         });
 
         Route::prefix('returned')->name('returned.')->group(function () {
             Route::get('/all', 'allReturned')->name('allReturned');
             Route::get('/{id}', 'showReturnedById')->name('showReturnedById');
+            Route::get('/user/{id}', 'showByReturnerId')->name('showReturnedByReturnerId');
         });
     });
 });
