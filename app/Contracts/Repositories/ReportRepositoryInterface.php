@@ -2,8 +2,6 @@
 
 namespace App\Contracts\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-
 interface ReportRepositoryInterface
 {
     public function all();

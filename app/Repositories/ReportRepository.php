@@ -10,9 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReportRepository implements ReportRepositoryInterface
 {
-    /**
-     * Create a new class instance.
-     */
     public function __construct(private BorrowedBook $borrowedBook, private ReturnedBook $returnedBook) {}
 
     /**
@@ -57,7 +54,7 @@ class ReportRepository implements ReportRepositoryInterface
      */
     public function findById(mixed $id): ?Model
     {
-        return $this->reportQuery()->where('borrowed_books.id', $id)->first();
+        return $this->reportQuery()->where('borrowed_books.id', $id)->firstOrFail();
     }
 
     public function findByBorrowerId(string $id): ?Collection
