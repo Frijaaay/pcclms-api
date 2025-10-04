@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\AuthUserRequest;
 use App\Contracts\Services\AuthServiceInterface;
 
-class AuthController
+class AuthController extends Controller
 {
-    use ApiResponseTrait;
-
     public function __construct(private AuthServiceInterface $authService) {}
 
     /**
