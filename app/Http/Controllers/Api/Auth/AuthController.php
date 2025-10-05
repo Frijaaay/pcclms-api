@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use Illuminate\Http\JsonResponse;
+use App\Contracts\Services\UserServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\Users\AuthUserRequest;
 use App\Contracts\Services\AuthServiceInterface;
 
 class AuthController extends Controller
 {
-    public function __construct(private AuthServiceInterface $authService) {}
+    public function __construct(private AuthServiceInterface $authService, private UserServiceInterface $userService) {}
 
-    /**
-     * Handles login response
-     */
+    public function register(RegisterUserRequest $request): JsonResponse
+    {
+        $response = $this->userService->create($request->validated());
+        return $this->handleSuccessResponse($response['data'], $response['message'], 201);
+    }
+
     public function login(AuthUserRequest $request): JsonResponse
     {
         $response = $this->authService->login($request->validated());

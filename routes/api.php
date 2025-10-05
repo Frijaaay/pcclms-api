@@ -17,6 +17,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
      */
     Route::prefix('auth')->controller(AuthController::class)->name('auth.')->group(function () {
         Route::post('/login', 'login')->name('login');
+        Route::post('/register', 'register')->name('register');
         Route::post('/refresh', 'refresh')->name('refresh');
         Route::middleware('jwt')->group(function () {
             Route::get('/hydrate', 'hydrate')->name('hydrate');

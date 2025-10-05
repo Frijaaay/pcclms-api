@@ -42,6 +42,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
         $user->email_verified_at = now();
         $user->email_verification_token = null;
+        $user->status = 'Active';
         $user->save();
 
         return $user;

@@ -14,10 +14,7 @@ class UserController extends Controller
 {
     use AuthorizesRequests;
 
-    public function __construct(UserServiceInterface $service)
-    {
-        parent::__construct($service);
-    }
+    public function __construct(private UserServiceInterface $service) {}
 
     /**
      * Get all librarians

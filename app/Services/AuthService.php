@@ -70,7 +70,7 @@ class AuthService implements AuthServiceInterface
         $authUser = auth()->user();
 
         // Checks if the user is verified
-        if (is_null($authUser->email_verified_at)) {
+        if (is_null($authUser->email_verified_at) || $authUser->status === 'Inactive') {
             throw new EmailUnverifiedException();
         }
 
