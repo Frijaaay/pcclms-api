@@ -32,15 +32,14 @@ class AuthUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_number' => ['required', 'string', 'regex:/^20\d{2}-\d{6}$/'],
+            'id_number' => ['required', 'string', 'regex:/^20\d{2}-\d{6}$/', 'exists:users,id_number'],
             'password' => ['required', 'string', 'min:8']
         ];
     }
     public function messages(): array
     {
         return [
-            'id_number.regex' => 'ID number is not valid',
-            'password.min' => 'Invalid password',
+            '*.*' => 'Invalid username or password',
         ];
     }
 
