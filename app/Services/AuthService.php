@@ -136,7 +136,7 @@ class AuthService implements AuthServiceInterface
     /** Get the authenticated user and issue a new access token */
     public function hydrate(?string $refresh_token)
     {
-            $user = auth()->user();
+            $user = auth()->user()->load('userType');
 
             if(!$user && !$this->validateRefreshToken($refresh_token)) {
                 throw new AuthException('Unauthorized Request', 403);
