@@ -25,7 +25,7 @@ class RegisterUserRequest extends FormRequest
     {
         return [
             'name' => ['string', 'max:100', 'required'],
-            'id_number' => ['required', 'string', 'max:11', 'unique:users,id_number', 'regex:/^20\d{2}-\d{6}$/'],
+            'id_number' => ['required', 'string', 'max:11', 'unique:users,id_number', 'regex:/^\d{4}-\d{6}$/'],
             'email' => ['required', 'email', 'max:100', 'unique:users,email', 'regex:/^[a-zA-Z0-9._%+-]+@pcc\.edu\.ph$/'],
         ];
     }
