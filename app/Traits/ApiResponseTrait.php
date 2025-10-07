@@ -72,12 +72,13 @@ trait ApiResponseTrait
                     name: $cookie['name'],
                     value: $cookie['value'],
                     minutes: $cookie['expiry'],
-                    path: '/api/v1/auth',
+                    path: '/',
                     domain: null,
-                    secure: env('SESSION_SECURE_COOKIE', app()->environment('production')),
+                    // secure: env('SESSION_SECURE_COOKIE', app()->environment('production')),
+                    secure: true,
                     httpOnly: true,
                     raw: false,
-                    sameSite: 'strict'
+                    sameSite: 'None'
                 )
         );
         }

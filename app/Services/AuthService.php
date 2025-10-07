@@ -44,12 +44,12 @@ class AuthService implements AuthServiceInterface
     {
         // If no refresh token received
         if (!$refresh_token) {
-            throw new AuthException('Invalid Refresh Token', 401);
+            throw new AuthException('Invalid Refresh Token', 403);
         }
         // if  refresh token is invalid or expired
         $user = $this->authRepository->validateToken($refresh_token);
         if (!$user) {
-            throw new AuthException('Invalid Refresh Token', 401);
+            throw new AuthException('Invalid Refresh Token', 403);
         }
 
         return $user;
@@ -139,7 +139,7 @@ class AuthService implements AuthServiceInterface
             $user = auth()->user();
 
             if(!$user && !$this->validateRefreshToken($refresh_token)) {
-                throw new AuthException('Unauthorized Request');
+                throw new AuthException('Unauthorized Request', 403);
             }
 
             $new_access_token = JWTAuth::refresh(true, true);
