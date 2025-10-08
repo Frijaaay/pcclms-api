@@ -7,8 +7,8 @@
     <script>
         // Redirect after 3 seconds
         setTimeout(function() {
-            window.location.href = 'http://localhost:3000/';
-        }, 3000);
+            window.location.href = 'http://localhost:3000/login';
+        }, 5000);
     </script>
     <style>
         body {

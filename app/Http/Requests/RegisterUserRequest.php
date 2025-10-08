@@ -27,6 +27,8 @@ class RegisterUserRequest extends FormRequest
             'name' => ['string', 'max:100', 'required'],
             'id_number' => ['required', 'string', 'max:11', 'unique:users,id_number', 'regex:/^\d{4}-\d{6}$/'],
             'email' => ['required', 'email', 'max:100', 'unique:users,email', 'regex:/^[a-zA-Z0-9._%+-]+@pcc\.edu\.ph$/'],
+            'type' => ['required', 'string', 'max:100'],
+            'department' => ['required', 'string', 'max:100']
         ];
     }
 

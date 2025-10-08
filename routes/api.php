@@ -19,9 +19,9 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('/login', 'login')->name('login');
         Route::post('/register', 'register')->name('register');
         Route::post('/logout', 'logout')->name('logout');
+        Route::post('/refresh', 'refresh')->name('refresh');
+        Route::get('/hydrate', 'hydrate')->name('hydrate');
         Route::middleware('jwt')->group(function () {
-            Route::post('/refresh', 'refresh')->name('refresh');
-            Route::get('/hydrate', 'hydrate')->name('hydrate');
         });
     });
     /**

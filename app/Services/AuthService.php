@@ -136,7 +136,7 @@ class AuthService implements AuthServiceInterface
     /** Get the authenticated user and issue a new access token */
     public function hydrate(?string $refresh_token)
     {
-            $user = auth()->user()->load('userType');
+            $user = auth()->user();
 
             if(!$user && !$this->validateRefreshToken($refresh_token)) {
                 throw new AuthException('Unauthorized Request', 403);
@@ -152,7 +152,7 @@ class AuthService implements AuthServiceInterface
                         'value' => $new_access_token,
                         'expires_in' => JWTAuth::factory()->getTTL() * 60
                     ],
-                    'user' => $user
+                    'user' => $user->load('userType')
                 ],
             ];
     }
