@@ -20,8 +20,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('/register', 'register')->name('register');
         Route::post('/logout', 'logout')->name('logout');
         Route::post('/refresh', 'refresh')->name('refresh');
-        Route::get('/hydrate', 'hydrate')->name('hydrate');
         Route::middleware('jwt')->group(function () {
+            Route::get('/hydrate', 'hydrate')->name('hydrate');
         });
     });
     /**
@@ -29,8 +29,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     */
     Route::prefix('users')->controller(UserController::class)->name('users.')->group(function () {
         Route::middleware('jwt')->group(function () {
-            Route::get('/', 'all')->name('all_users');
             Route::post('/', 'store')->name('store_user');
+            Route::get('/admins', 'allAdmins')->name('all_admins');
             Route::get('/librarians', 'allLibrarians')->name('all_librarians');
             Route::get('/borrowers', 'allBorrowers')->name('all_borrowers');
             Route::get('/{id}', 'show')->whereUuid('id')->name('show_user');
