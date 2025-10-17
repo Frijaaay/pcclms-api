@@ -75,11 +75,21 @@ trait ApiResponseTrait
                     path: '/',
                     domain: null,
                     // secure: env('SESSION_SECURE_COOKIE', app()->environment('production')),
-                    secure: true,
+                    // secure: true,
+                    secure: false,
                     httpOnly: true,
                     raw: false,
-                    sameSite: 'None'
+                    // sameSite: 'None'
+                    sameSite: 'Lax',
                 )
         );
         }
+
+    protected function handleForgetCookieResponse(string $message, int $code = 200)
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => $message,
+        ], $code)->withCookie(cookie()->forget('refresh_token'));
+    }
 }
