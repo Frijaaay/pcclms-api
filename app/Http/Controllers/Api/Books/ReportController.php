@@ -37,7 +37,7 @@ class ReportController extends Controller
     /** Show Borrowed by user */
     public function showByBorrowerId(string $id)
     {
-        return $this->handleSuccessResponse($this->userRepository->findBorrowedBooks($id));
+        return $this->handleSuccessResponse($this->reportRepository->findByBorrowerId($id));
     }
 
     /** All borrowed record by user */

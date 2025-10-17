@@ -26,6 +26,7 @@ class ReportRepository implements ReportRepositoryInterface
             ->select(
                 'borrowed_books.id',
                 'returned_books.id as return_id',
+                'books.id as book_id',
                 'books.title',
                 'books.author',
                 'borrower.name as borrower_name',
