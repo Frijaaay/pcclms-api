@@ -16,6 +16,12 @@ class UserController extends Controller
 
     public function __construct(private UserServiceInterface $service) {}
 
+    public function allAdmins()
+    {
+        $response = $this->service->getAllAdmins();
+        return $this->handleSuccessResponse($response['data'], $response['message']);
+    }
+
     /**
      * Get all librarians
      */

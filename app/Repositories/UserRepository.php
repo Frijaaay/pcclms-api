@@ -14,6 +14,14 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
 
     /**
+     * Get all models that are admins
+     */
+    public function findAllAdmins()
+    {
+        return $this->model->where('user_type_id', '=', 1)->orderBy('status')->get();
+    }
+
+    /**
      * Gets all models that are librarians
      */
     public function findAllLibrarians()

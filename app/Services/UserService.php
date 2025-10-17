@@ -16,12 +16,20 @@ class UserService extends BaseService implements UserServiceInterface
         parent::__construct($repository);
     }
 
+    public function getAllAdmins()
+    {
+        $data = $this->repository->findAllAdmins();
+        $data = $data->where('id', '!=', auth()->id());
+        return $this->serviceArrayReturn($data);
+    }
     /**
      * Get all librarians
      */
     public function getAllLibrarians()
     {
-        return $this->serviceArrayReturn($this->repository->findAllLibrarians());
+        $data = $this->repository->findAllLibrarians();
+        $data = $data->where('id', '!=', auth()->id());
+        return $this->serviceArrayReturn($data);
     }
 
     /**
@@ -29,7 +37,9 @@ class UserService extends BaseService implements UserServiceInterface
      */
     public function getAllBorrowers()
     {
-        return $this->serviceArrayReturn($this->repository->findAllBorrowers());
+        $data = $this->repository->findAllBorrowers();
+        $data = $data->where('id', '!=', auth()->id());
+        return $this->serviceArrayReturn($data);
     }
 
     /**
@@ -52,6 +62,16 @@ class UserService extends BaseService implements UserServiceInterface
         Mail::to($user->email)->send(new VerifyUserEmail($user->id, $user->email_verification_token));
 
         return $this->serviceArrayReturn($user, 'User created successfully');
+    }
+
+    /**
+     * Updates user
+     */
+        public function update(mixed $id, array $data): Array
+    {
+        $user = $this->repository->update($id, $data);
+        $user->load('userType');
+        return $this->serviceArrayReturn($user, "Update success");
     }
 
     /**
