@@ -50,6 +50,6 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse
     {
         $response = $this->authService->logout($request->cookie('refresh_token'));
-        return $this->handleSuccessResponse(null, $response);
+        return $this->handleForgetCookieResponse($response);
     }
 }
