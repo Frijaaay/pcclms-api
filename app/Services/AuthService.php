@@ -52,7 +52,7 @@ class AuthService implements AuthServiceInterface
     }
 
     /** Create refresh token */
-    private function generateRefreshToken($user_id)
+    private function generateRefreshToken(string $user_id)
     {
         $refresh_token = Str::random(64);
 

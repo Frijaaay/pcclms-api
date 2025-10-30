@@ -36,17 +36,22 @@ class AuthRepository implements AuthRepositoryInterface
     /** validates refresh token */
     public function validateToken(string $refresh_token)
     {
-        $refresh_token = hash('sha256', $refresh_token);
+        $hashed_refresh_token = hash('sha256', $refresh_token);
 
-        $refresh_token = $this->rToken->with('user')->where('token', $refresh_token)
+        $valid_refresh_token = $this->rToken->with('user')->where('token', $hashed_refresh_token)
             ->where('revoked', false)
             ->where('expires_at', '>', now())
             ->first();
 
-        return $refresh_token?->user;
+        if (!$valid_refresh_token) {
+            $this->revokeToken($refresh_token);
+            return false;
+        }
+
+        return $valid_refresh_token?->user;
     }
 
-    /** update  */
+    /** Update refresh token*/
     public function createNewRefreshToken(string $id, string $refresh_token, string $new_refresh_token)
     {
         $refresh_token = hash('sha256', $refresh_token);
@@ -59,6 +64,7 @@ class AuthRepository implements AuthRepositoryInterface
         ]);
     }
 
+    /** Revokes token */
     public function revokeToken(?string $refresh_token)
     {
         return $this->rToken->where('token', hash('sha256', $refresh_token))
